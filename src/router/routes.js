@@ -116,6 +116,13 @@ export default [
   },
 
   {
+    path: "/dossier/ajouterfacture",
+    name: "page ajouterfacture",
+    meta: { title: "ajouterfacture", authRequired: true },
+    component: () => import("../views/dossier/ajouterfacture.vue")
+  },
+
+  {
     path: "/dossier/facture",
     name: "page facture",
     meta: { title: "facture", authRequired: true },

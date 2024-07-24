@@ -46,13 +46,14 @@ export default {
     async createProduit() {
       this.errors = {};
       try {
-        await axios.post('http://127.0.0.1:8000/api/AddProducts', this.newProduits)
-          .then((response) => {
-            this.fetchproduit();
-            this.showCreateModal = false;
-            this.newProduits = { name: '', description: '', price: '' };
-            console.log('Product created successfully:', response.data);
-          });
+        const response = await axios.post('http://127.0.0.1:8000/api/AddProducts', this.newProduits);
+        console.log('Product created successfully:', response.data);
+        
+        // Update the list immediately
+        this.produit.push(response.data);
+        
+        this.showCreateModal = false;
+        this.newProduits = { name: '', description: '', price: '' };
       } catch (error) {
         if (error.response) {
           this.errors = error.response.data.errors || {};
@@ -68,12 +69,18 @@ export default {
     },
     async updateProduit() {
       this.errors = {};
+      if (!this.editProductData.id) {
+        console.error('Product ID is missing');
+        return;
+      }
+
       try {
         const response = await axios.put(`http://127.0.0.1:8000/api/updateProducts/${this.editProductData.id}`, this.editProductData);
+        console.log('Product updated successfully:', response.data);
+        
         this.fetchproduit();
         this.showEditModal = false;
         this.resetEditProduitForm();
-        console.log('Product updated successfully:', response.data);
       } catch (error) {
         if (error.response) {
           this.errors = error.response.data.errors || {};

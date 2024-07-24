@@ -145,9 +145,12 @@ export default {
               </BCol>
               <BCol sm="8">
                 <div class="text-sm-end">
-                  <BButton variant="success" class="btn-rounded mb-2 me-2" @click="showCreateModal = true">
+                  <router-link to="/dossier/ajouterfacture">
+                    <BButton variant="success" class="btn-rounded mb-2 me-2" >
                     <i class="mdi mdi-plus me-1"></i> Ajouter une facture
                   </BButton>
+                  </router-link>
+                 
                 </div>
               </BCol>
             </BRow>
