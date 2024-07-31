@@ -209,7 +209,7 @@ export default {
     </BModal>
 
     <!-- Modal for editing an existing client -->
-    <BModal v-model="showEditModal" title="Modifier utilisateur" title-class="font-18" body-class="p-3" hide-footer class="v-modal-custom">
+    <BModal v-model="showEditModal" title="Modifier client" title-class="font-18" body-class="p-3" hide-footer class="v-modal-custom">
       <BForm @submit.prevent="updateClient">
         <BRow>
           <BCol cols="12">

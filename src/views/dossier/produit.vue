@@ -9,6 +9,7 @@ export default {
   data() {
     return {
       produit: [],
+      categories: [],
       showModal: false,
       showCreateModal: false,
       showCreateCategoryModal: false,
@@ -17,6 +18,7 @@ export default {
         name: '',
         description: '',
         price: '',
+        category_id: '',
       },
       newCategories: {
         name: '',
@@ -32,28 +34,38 @@ export default {
   },
   mounted() {
     this.fetchproduit();
+    this.fetchcategory();
   },
   methods: {
     async fetchproduit() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/products-with-category-info');
+        const response = await axios.get('http://127.0.0.1:8000/api/listProduct');
         console.log('API Response:', response.data); // Log the response
         this.produit = response.data;
       } catch (error) {
         console.error('Erreur lors de la récupération des produits:', error);
       }
     },
+
+    async fetchcategory() {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/listCategories');
+        console.log('API Response:', response.data); // Log the response
+        this.categories = response.data;
+      } catch (error) {
+        console.error('Erreur lors de la récupération des categories:', error);
+      }
+    },
+
     async createProduit() {
       this.errors = {};
       try {
         const response = await axios.post('http://127.0.0.1:8000/api/AddProducts', this.newProduits);
         console.log('Product created successfully:', response.data);
-        
-        // Update the list immediately
-        this.produit.push(response.data);
-        
+        this.fetchproduit();        
         this.showCreateModal = false;
-        this.newProduits = { name: '', description: '', price: '' };
+         this. resetNewProduitForm() ;
+         console.log('Product created successfully:', response.data);
       } catch (error) {
         if (error.response) {
           this.errors = error.response.data.errors || {};
@@ -69,23 +81,32 @@ export default {
     },
     async updateProduit() {
       this.errors = {};
-      if (!this.editProductData.id) {
-        console.error('Product ID is missing');
-        return;
-      }
-
       try {
         const response = await axios.put(`http://127.0.0.1:8000/api/updateProducts/${this.editProductData.id}`, this.editProductData);
-        console.log('Product updated successfully:', response.data);
-        
+        console.log('Product updated successfully:', response.data);        
         this.fetchproduit();
         this.showEditModal = false;
         this.resetEditProduitForm();
+        console.log('Product updated successfully:', response.data);
       } catch (error) {
         if (error.response) {
           this.errors = error.response.data.errors || {};
         }
       }
+    },
+
+    async deleteProduct(id){
+      if(confirm('voulez-vous vraiment supprimerr ce produit?')){
+        try{
+          await axios.delete(`http://127.0.0.1:8000/api/deleteProducts/${id}`);
+          this.fetchproduit();
+          console.log('Product deleted successfully');
+        }catch (error) {
+          console.error('Erreur lors de la suppression du prroduit:', error);
+        }
+      }
+      
+
     },
     editProduit(produit) {
       this.editProductData = { ...produit };
@@ -138,22 +159,24 @@ export default {
                   <BTr>
                     <BTh>Numero</BTh>
                     <BTh>Produit</BTh>
-                    <BTh>Catégorie</BTh>
                     <BTh>Description</BTh>
                     <BTh>Prix</BTh>
+                    <BTh>Action</BTh>
                   </BTr>
                 </BThead>
                 <BTbody>
                   <BTr v-for="(prod, index) in produit" :key="index">
                     <BTd>{{ index + 1 }}</BTd>
-                    <BTd>{{ prod.name }}</BTd>
-                    <BTd>{{ prod.category_name }}</BTd>
+                    <BTd>{{ prod.name }}</BTd>                  
                     <BTd>{{ prod.description }}</BTd>
                     <BTd>{{ prod.price }}</BTd>
                     <BTd>
                       <ul class="list-unstyled hstack gap-1 mb-0">
                         <li data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Edit">
                           <BLink href="#" @click="editProduit(prod)" class="btn btn-sm btn-soft-info"><i class="mdi mdi-pencil-outline"></i></BLink>
+                        </li>
+                        <li data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Delete">
+                          <BLink href="#" @click="deleteProduct(prod.id)" class="btn btn-sm btn-soft-danger"><i class="mdi mdi-delete-outline"></i></BLink>
                         </li>
                       </ul>
                     </BTd>
@@ -192,6 +215,15 @@ export default {
               <div v-if="errors.price" class="text-danger">{{ errors.price[0] }}</div>
             </div>
           </BCol>
+          <BCol cols="12">
+            <div class="mb-3">
+              <label for="category">Categorie</label>
+              <select id="category" v-model="newProduits.category_id" class="form-control">
+                <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
+              </select>
+              <div v-if="errors.category" class="text-danger">{{ errors.role[0] }}</div>
+            </div>
+          </BCol>
         </BRow>
         <div class="text-end pt-5 mt-3">
           <BButton variant="light" @click="showModal = false">Fermer</BButton>
@@ -225,6 +257,7 @@ export default {
               <div v-if="errors && errors.price" class="text-danger">{{ errors.price[0] }}</div>
             </div>
           </BCol>
+          
         </BRow>
         <div class="text-end pt-5 mt-3">
           <BButton variant="light" @click="showEditModal = false">Fermer</BButton>

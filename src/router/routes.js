@@ -6,6 +6,8 @@ export default [
     meta: { title: "Dashboard", authRequired: true },
     component: () => import("../views/dashboards/default")
   },
+
+  
   {
     path: "/login",
     name: "login",
@@ -116,17 +118,33 @@ export default [
   },
 
   {
+    path: "/dossier/utilisateur",
+    name: "page utilisateur",
+    meta: { title: "utilisateur", authRequired: true },
+    component: () => import("../views/dossier/utilisateur.vue")
+  },
+
+  {
     path: "/dossier/ajouterfacture",
     name: "page ajouterfacture",
     meta: { title: "ajouterfacture", authRequired: true },
     component: () => import("../views/dossier/ajouterfacture.vue")
   },
 
+
+
   {
-    path: "/dossier/facture",
-    name: "page facture",
-    meta: { title: "facture", authRequired: true },
-    component: () => import("../views/dossier/facture.vue")
+    path: "/dossier/facturelist",
+    name: "page facturelist",
+    meta: { title: "facturelist", authRequired: true },
+    component: () => import("../views/dossier/facturelist.vue")
+  },
+
+  {
+    path: "/dossier/facturedetail",
+    name: "page facturedetail",
+    meta: { title: "facturedetail", authRequired: true },
+    component: () => import("../views/dossier/facturedetail.vue")
   },
 
   {

@@ -19,6 +19,15 @@ export const menuItems = [
         ]
     },
 
+
+    {
+        id: 5,
+        label: "Utilisateurs",
+        icon: "bx-user",
+        link: "/dossier/Utilisateur",
+    
+    },
+
     {
         id: 5,
         label: "Clients",
@@ -31,16 +40,22 @@ export const menuItems = [
         id: 3,
         label: "Factures",
         icon: "bx-receipt",
-        link: "/dossier/facture",
-     
-    },
+       subItems: [
+           {
+               id: 4,
+               label: "List Facture",
+               link: "/dossier/facturelist",
+               parentId: 3
+           },
 
-    {
-        id: 2,
-        label: "Souscription",
-        icon: "bx-task",
-        link: "/dossier/souscription",
-       
+           {
+               id: 5,
+               label: "Factue details",
+               link: "/dossier/facturedetail",
+               parentId: 3
+           },
+       ]
+     
     },
 
 
@@ -66,7 +81,7 @@ export const menuItems = [
         id: 7,
         isLayout: true
     },
-    {
+   /* {
         id: 54,
         label: "menuitems.pages.text",
     
@@ -226,5 +241,5 @@ export const menuItems = [
                 ]
             }
         ]
-    }
+    }*/
 ];
