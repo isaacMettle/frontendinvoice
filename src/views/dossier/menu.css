@@ -1,0 +1,46 @@
+/* Assure-toi de lier ce fichier CSS à ton projet */
+.menu-title {
+    font-weight: bold;
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+  }
+  
+  .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .menu-item:hover {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .menu-item .bx {
+    font-size: 1.5rem;
+    margin-right: 10px;
+  }
+  
+  .submenu-item {
+    padding: 8px 20px;
+    font-size: 1rem;
+  }
+  
+  .submenu-item:hover {
+    background-color: #f8f9fa;
+    color: #007bff;
+  }
+  
+  .has-submenu {
+    position: relative;
+  }
+  
+  .has-submenu::after {
+    content: '\f078'; /* Unicode for down arrow */
+    font-family: 'bx';
+    font-size: 1rem;
+    margin-left: auto;
+  }
+  

@@ -154,36 +154,41 @@ export default {
               </BCol>
             </BRow>
             <div class="table-responsive">
-              <BTableSimple class="table-centered table-nowrap align-middle">
-                <BThead>
-                  <BTr>
-                    <BTh>Numero</BTh>
-                    <BTh>Produit</BTh>
-                    <BTh>Description</BTh>
-                    <BTh>Prix</BTh>
-                    <BTh>Action</BTh>
-                  </BTr>
-                </BThead>
-                <BTbody>
-                  <BTr v-for="(prod, index) in produit" :key="index">
-                    <BTd>{{ index + 1 }}</BTd>
-                    <BTd>{{ prod.name }}</BTd>                  
-                    <BTd>{{ prod.description }}</BTd>
-                    <BTd>{{ prod.price }}</BTd>
-                    <BTd>
-                      <ul class="list-unstyled hstack gap-1 mb-0">
-                        <li data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Edit">
-                          <BLink href="#" @click="editProduit(prod)" class="btn btn-sm btn-soft-info"><i class="mdi mdi-pencil-outline"></i></BLink>
-                        </li>
-                        <li data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Delete">
-                          <BLink href="#" @click="deleteProduct(prod.id)" class="btn btn-sm btn-soft-danger"><i class="mdi mdi-delete-outline"></i></BLink>
-                        </li>
-                      </ul>
-                    </BTd>
-                  </BTr>
-                </BTbody>
-              </BTableSimple>
-            </div>
+  <BTableSimple class="table-custom table-striped table-hover table-bordered">
+    <BThead>
+      <BTr>
+        <BTh>Numero</BTh>
+        <BTh>Produit</BTh>
+        <BTh>Description</BTh>
+        <BTh>Prix</BTh>
+        <BTh>Action</BTh>
+      </BTr>
+    </BThead>
+    <BTbody>
+      <BTr v-for="(prod, index) in produit" :key="index">
+        <BTd>{{ index + 1 }}</BTd>
+        <BTd>{{ prod.name }}</BTd>
+        <BTd>{{ prod.description }}</BTd>
+        <BTd>{{ prod.price }}</BTd>
+        <BTd>
+          <ul class="list-unstyled hstack gap-1 mb-0">
+            <li data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Edit">
+              <BLink href="#" @click="editProduit(prod)" class="btn btn-sm btn-soft-info">
+                <i class="mdi mdi-pencil-outline"></i>
+              </BLink>
+            </li>
+            <li data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Delete">
+              <BLink href="#" @click="deleteProduct(prod.id)" class="btn btn-sm btn-soft-danger">
+                <i class="mdi mdi-delete-outline"></i>
+              </BLink>
+            </li>
+          </ul>
+        </BTd>
+      </BTr>
+    </BTbody>
+  </BTableSimple>
+</div>
+
             <pagination />
           </BCardBody>
         </BCard>
@@ -267,3 +272,58 @@ export default {
     </BModal>
   </Layout>
 </template>
+
+<style>
+/* Dans le fichier CSS principal ou styles scoped */
+.table-custom {
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.table-custom thead th {
+  background-color: #007bff;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+}
+
+.table-custom tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table-custom tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.table-custom td, .table-custom th {
+  vertical-align: middle;
+  text-align: center;
+  padding: 12px;
+}
+
+.table-custom td {
+  font-size: 14px;
+}
+
+.table-custom .btn-soft-info {
+  background-color: #e7f0ff;
+  color: #007bff;
+  border: none;
+}
+
+.table-custom .btn-soft-info:hover {
+  background-color: #d0e3ff;
+}
+
+.table-custom .btn-soft-danger {
+  background-color: #f8d7da;
+  color: #dc3545;
+  border: none;
+}
+
+.table-custom .btn-soft-danger:hover {
+  background-color: #f1b0b7;
+}
+
+</style>

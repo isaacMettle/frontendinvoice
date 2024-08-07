@@ -415,8 +415,8 @@ const deleteInvoiceItem = (id, index) => {
                           </BCol>
                         </BRow>
                         <BCol mb="12">
-                          <div class="mt-2 text-end">
-                            <BButton variant="success" class="w-lg" @click="onSave()">Enregistrer la facture</BButton>
+                          <div class="mt-2 text-end"  @click="onSave()">
+                            
                           </div>
                         </BCol>
                       </BTr>

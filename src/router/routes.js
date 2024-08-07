@@ -107,7 +107,24 @@ export default [
     path: "/dossier/client",
     name: "page client",
     meta: { title: "client", authRequired: true },
-    component: () => import("../views/dossier/client.vue")
+    component: () => import("../views/dossier/client.vue"),
+   
+  },
+
+  {
+    path: "/dossier/show/:id",
+    name: "page show",
+    meta: { title: "show", authRequired: true },
+    component: () => import("../views/dossier/show.vue"),
+    props: true
+  },
+
+  {
+    path: "/dossier/edit/:id",
+    name: "page edit",
+    meta: { title: "edit", authRequired: true },
+    component: () => import("../views/dossier/edit.vue"),
+    props: true
   },
 
   {

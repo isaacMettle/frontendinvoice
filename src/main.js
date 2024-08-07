@@ -18,6 +18,7 @@ import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
 import "@/assets/scss/app.scss";
 import "@vueform/multiselect/themes/default.css"
 
+
 // PINIA
 import pinia from '@/state/pinia'
 
