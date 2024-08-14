@@ -232,7 +232,7 @@ const deleteInvoiceItem = (id, index) => {
         <BCard>
           <BCard no-body>
             <BCardTitle>Informations de la facture</BCardTitle>
-            <p class="card-title-desc">Sélectionnez d'abord le client</p>
+            <!--p class="card-title-desc">Sélectionnez d'abord le client</p-->
 
             <BForm>
               <BRow>
@@ -385,7 +385,7 @@ const deleteInvoiceItem = (id, index) => {
                         <BRow>
                           <BCol sm="6">
                             <div class="mb-3">
-                              <label for="email-text">Texte Email</label>
+                              <label for="email-text">Texte Email (Optionnel)</label>
                               <textarea id="email-text" v-model="form.email_text" name="email-text" class="form-control" rows="8" cols="500"></textarea>
                             </div>
                           </BCol>

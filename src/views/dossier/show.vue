@@ -55,9 +55,9 @@ onMounted(() => {
         <BCard no-body>
           <BCardBody>
             <div class="invoice-title">
-              <h4 class="float-end font-size-16">Order # {{ form.invoice_number }}</h4>
+              <h4 class="float-end font-size-16">{{ form.invoice_number }}</h4>
               <div class="mb-4">
-                <img src="@/assets/images/logo-dark.png" alt="logo" height="20" />
+                <img src="@/assets/images/wequipu.jpg" alt="logo" height="90" />
               </div>
             </div>
             <hr />
@@ -73,7 +73,7 @@ onMounted(() => {
               
               <BCol cols="6" class="mt-3 text-sm-end">
                 <address>
-                  <strong>Order Date:</strong> {{ form.date }}
+                  <strong>Date:</strong> {{ form.date }}
                   <br />
                 </address>
               </BCol>
@@ -121,7 +121,7 @@ onMounted(() => {
             <div class="d-print-none">
               <div class="float-end">
                 <BLink  class="btn btn-success waves-effect waves-light me-1" @click="print()"><i class="fa fa-print"></i></BLink>
-                <BLink href="#" class="btn btn-primary w-md waves-effect waves-light ms-1">Send</BLink>
+                <!--BLink href="#" class="btn btn-primary w-md waves-effect waves-light ms-1">Send</BLink-->
               </div>
             </div>
           </BCardBody>

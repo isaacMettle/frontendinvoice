@@ -154,40 +154,40 @@ export default {
               </BCol>
             </BRow>
             <div class="table-responsive">
-  <BTableSimple class="table-custom table-striped table-hover table-bordered">
-    <BThead>
-      <BTr>
-        <BTh>Numero</BTh>
-        <BTh>Produit</BTh>
-        <BTh>Description</BTh>
-        <BTh>Prix</BTh>
-        <BTh>Action</BTh>
-      </BTr>
-    </BThead>
-    <BTbody>
-      <BTr v-for="(prod, index) in produit" :key="index">
-        <BTd>{{ index + 1 }}</BTd>
-        <BTd>{{ prod.name }}</BTd>
-        <BTd>{{ prod.description }}</BTd>
-        <BTd>{{ prod.price }}</BTd>
-        <BTd>
-          <ul class="list-unstyled hstack gap-1 mb-0">
-            <li data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Edit">
-              <BLink href="#" @click="editProduit(prod)" class="btn btn-sm btn-soft-info">
-                <i class="mdi mdi-pencil-outline"></i>
-              </BLink>
-            </li>
-            <li data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Delete">
-              <BLink href="#" @click="deleteProduct(prod.id)" class="btn btn-sm btn-soft-danger">
-                <i class="mdi mdi-delete-outline"></i>
-              </BLink>
-            </li>
-          </ul>
-        </BTd>
-      </BTr>
-    </BTbody>
-  </BTableSimple>
-</div>
+          <BTableSimple class="table-custom table-striped table-hover table-bordered">
+            <BThead>
+              <BTr>
+                <BTh>Numero</BTh>
+                <BTh>Produit</BTh>
+                <BTh>Description</BTh>
+                <BTh>Prix</BTh>
+                <BTh>Action</BTh>
+              </BTr>
+            </BThead>
+            <BTbody>
+              <BTr v-for="(prod, index) in produit" :key="index">
+                <BTd>{{ index + 1 }}</BTd>
+                <BTd>{{ prod.name }}</BTd>
+                <BTd>{{ prod.description }}</BTd>
+                <BTd>{{ prod.price }}</BTd>
+                <BTd>
+                  <ul class="list-unstyled hstack gap-1 mb-0">
+                        <li>
+                    <BButton class="btn-custom" variant="success" @click="editProduit(prod)" style="padding: 0.2rem 0.4rem; font-size: 0.75rem;">
+                      <i class="mdi mdi-pencil d-block font-size-16"></i> Edit
+                    </BButton>
+                  </li>
+                  <li>
+                    <BButton class="btn-custom" variant="danger" @click="deleteProduct(prod.id)" style="padding: 0.2rem 0.4rem; font-size: 0.75rem;">
+                      <i class="mdi mdi-trash-can d-block font-size-16"></i> Delete
+                    </BButton>
+                  </li>            
+                  </ul>
+                </BTd>
+              </BTr>
+            </BTbody>
+          </BTableSimple>
+          </div>
 
             <pagination />
           </BCardBody>
@@ -273,12 +273,11 @@ export default {
   </Layout>
 </template>
 
-<style>
-/* Dans le fichier CSS principal ou styles scoped */
+<style scoped>
+/* Custom styles for the table */
 .table-custom {
   border-radius: 8px;
   overflow: hidden;
-  margin-top: 20px;
 }
 
 .table-custom thead th {
@@ -306,24 +305,31 @@ export default {
   font-size: 14px;
 }
 
-.table-custom .btn-soft-info {
-  background-color: #e7f0ff;
-  color: #007bff;
-  border: none;
+.table-custom .btn-custom {
+  min-width: 100px;
+  height: 40px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.v-modal-custom .modal-title {
+  font-weight: bold;
 }
 
-.table-custom .btn-soft-info:hover {
-  background-color: #d0e3ff;
+.v-modal-custom .btn-light {
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
+  color: #000;
 }
 
-.table-custom .btn-soft-danger {
-  background-color: #f8d7da;
-  color: #dc3545;
-  border: none;
+.v-modal-custom .btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: #fff;
 }
 
-.table-custom .btn-soft-danger:hover {
-  background-color: #f1b0b7;
+.text-danger {
+  font-size: 0.875rem;
 }
-
 </style>

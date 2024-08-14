@@ -51,16 +51,13 @@ export default {
     async createCategorie() {
       this.errors = {};
       try {
-        await axios.post('http://127.0.0.1:8000/api/AddCategories', this.newCategories)
-          .then((response) => {
-            this.fetchCategories();
-            this.showCreateCategoryModal = false;
-            this.newCategories = { name: '' };
+        const response = await axios.post('http://127.0.0.1:8000/api/AddCategories', this.newCategories);     
+            this.fetchcategory();
+            this.showCreateModal = false;
+            this.resetNewCategoryForm();
             // this.resetNewProductForm();
             console.log('Category created successfully:', response.data);
-          }
-
-          )
+         
 
       } catch (error) {
         if (error.response) {
@@ -202,7 +199,7 @@ export default {
       </BForm>
     </BModal-->
 
-    <BModal v-model="showCreateCategoryModal" title="Ajouter une nouvelle categorie" title-class="font-18" body-class="p-3"
+    <BModal v-model="showCreateModal" title="Ajouter une nouvelle categorie" title-class="font-18" body-class="p-3"
       hide-footer class="v-modal-custom">
       <BForm @submit.prevent="createCategorie">
         <BRow>

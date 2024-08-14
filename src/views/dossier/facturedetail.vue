@@ -25,7 +25,7 @@ const formData = ref({
 const showUpdateModal = ref(false);
 
 onMounted(async () => {
-  await getInvoices();
+  await getInvoices1();
 });
 
 watch(showEditModal, (newValue) => {
@@ -35,7 +35,7 @@ watch(showEditModal, (newValue) => {
   }
 });
 
-const getInvoices = async () => {
+const getInvoices1 = async () => {
   try {
     let response = await axios.get('http://127.0.0.1:8000/api/listInvoice');
     invoices.value = response.data.invoices;
@@ -68,7 +68,7 @@ const updateInvoice = async () => {
 
     console.log(response.data.message);
     showUpdateModal.value = false;
-    await getInvoices();
+    await getInvoices1();
   } catch (error) {
     const errorMessage = error.response?.data?.errors || error.message;
     console.error('Erreur lors de la mise à jour de la facture:', errorMessage);
@@ -80,11 +80,13 @@ const onShow = (id) => {
 };
 
 const deleteInvoice = async (invoiceId) => {
-  try {
+  if(confirm("Voulez-vous vraiment supprimer cette facture?")){
+    try {
     await axios.delete(`http://127.0.0.1:8000/api/deleteInvoices/${invoiceId}`);
-    await getInvoices();
+    await getInvoices1();
   } catch (error) {
     console.error('Erreur lors de la suppression de la facture:', error);
+  }
   }
 };
 
@@ -96,7 +98,7 @@ const updateApprobation = async (invoice) => {
       approbation: invoice.approbation
     });
     console.log('Approbation mise à jour avec succès');
-    await getInvoices(); // Actualiser les factures après la mise à jour
+    await getInvoices1(); // Actualiser les factures après la mise à jour
   } catch (error) {
     console.error('Erreur lors de la mise à jour de l\'approbation:', error);
   }

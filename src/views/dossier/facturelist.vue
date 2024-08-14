@@ -72,16 +72,40 @@ const newInvoice = async () => {
   }
 };
 
+const sendInvoice = async (invoiceId) => {
+    try {
+        // Envoyer la facture via l'API
+        await axios.post(`http://127.0.0.1:8000/api/send_invoice/${invoiceId}`);
+
+        // Mettre à jour le statut de la facture en 'envoyé'
+        await axios.patch(`http://127.0.0.1:8000/api/update_invoice_status/${invoiceId}`, { statut: 'envoyé' });
+
+        // Réactualiser la liste des factures pour refléter le changement
+        await getInvoices1();
+
+        alert('Invoice sent and status updated successfully.');
+    } catch (error) {
+        console.error('Error sending invoice:', error);
+        alert('Failed to send invoice.');
+    }
+};
+
+
+
+
 const onShow = (id) => {
   router.push(`show/${id}`);
 };
 
 const deleteInvoice = async (invoiceId) => {
-  try {
+  if (confirm("Voulez-vous vraiment supprimer cette facture?")) {
+    try {
     await axios.delete(`http://127.0.0.1:8000/api/deleteInvoices/${invoiceId}`);
     await getInvoices1();
+    console.log('Client deleted successfully');
   } catch (error) {
     console.error('Erreur lors de la suppression de la facture:', error);
+  }
   }
 };
 
@@ -113,9 +137,7 @@ const onEdit = (id) =>{
               </BCol>
               <BCol sm="8">
                 <div class="text-sm-end">
-                  <BButton variant="success" class="btn-rounded mb-2 me-2" @click="newInvoice">
-                    <i class="mdi mdi-plus me-1"></i> Nouvelle facture
-                  </BButton>
+                  <BButton variant="primary" class="me-1" @click="newInvoice" > Nouvelle facture</BButton>
                 </div>
               </BCol>
             </BRow>
@@ -130,6 +152,7 @@ const onEdit = (id) =>{
                     <BTh>Due Date</BTh>
                     <BTh>Total</BTh>
                     <BTh>Approbation</BTh>
+                    <BTh>Statut</BTh>
                     <BTh>Action</BTh>
                   </BTr>
                 </BThead>
@@ -143,31 +166,38 @@ const onEdit = (id) =>{
                     <BTd>{{ invoice.due_date }}</BTd>
                     <BTd>{{ invoice.total }}</BTd>
                     <BTd>{{ invoice.approbation }}</BTd>
+                    <BTd>
+                      <BBadge :variant="invoice.statut === 'payer' ? 'success' : (invoice.statut === 'envoyé' ? 'info' : 'warning')">
+                        {{ invoice.statut }}
+                      </BBadge>
+                    </BTd>
                     <BTd class="text-center">
-    <ul class="list-unstyled d-flex justify-content-center gap-2 mb-0">
-      <li>
-        <BButton class="btn-custom" variant="dark" @click="onShow(invoice.id)" style="padding: 0.2rem 0.4rem; font-size: 0.75rem;">voir</BButton>
-      </li>
-      <li>
-        <BButton class="btn-custom" variant="dark" @click="onShow(invoice.id)" style="padding: 0.2rem 0.4rem; font-size: 0.75rem;">
-          <i class="fas fa-envelope"></i> Envoyer
-        </BButton>
-      </li>
-      <li>
-        <BButton class="btn-custom" variant="success" @click="onEdit(invoice.id)" style="padding: 0.2rem 0.4rem; font-size: 0.75rem;">
-          <i class="mdi mdi-pencil d-block font-size-16"></i> Edit
-        </BButton>
-      </li>
-      <li>
-        <BButton class="btn-custom" variant="danger" @click="deleteInvoice(invoice.id)" style="padding: 0.2rem 0.4rem; font-size: 0.75rem;">
-          <i class="mdi mdi-trash-can d-block font-size-16"></i> Delete
-        </BButton>
-      </li>
-    </ul>
-  </BTd>
+                  <ul class="list-unstyled d-flex justify-content-center gap-2 mb-0">
+                    <li>
+                      <BButton class="btn-custom" variant="dark" @click="onShow(invoice.id)" style="padding: 0.2rem 0.4rem; font-size: 0.75rem;">voir</BButton>
+                    </li>
+                    <li>
+                      <BButton class="btn-custom" variant="dark" @click="sendInvoice(invoice.id)" style="padding: 0.2rem 0.4rem; font-size: 0.75rem;">
+                        <i class="fas fa-envelope"></i> Envoyer
+                      </BButton>
+                    </li>
+                    <li>
+                      <BButton class="btn-custom" variant="success" @click="onEdit(invoice.id)" style="padding: 0.2rem 0.4rem; font-size: 0.75rem;">
+                        <i class="mdi mdi-pencil d-block font-size-16"></i> Edit
+                      </BButton>
+                    </li>
+                    <li>
+                      <BButton class="btn-custom" variant="danger" @click="deleteInvoice(invoice.id)" style="padding: 0.2rem 0.4rem; font-size: 0.75rem;">
+                        <i class="mdi mdi-trash-can d-block font-size-16"></i> Delete
+                      </BButton>
+                    </li>
+                  </ul>
+                </BTd>
                   </BTr>
                 </BTbody>
               </BTableSimple>
+              <!-- Pagination Control -->
+             
             </div>
 
             <pagination />

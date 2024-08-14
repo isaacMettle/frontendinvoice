@@ -201,9 +201,9 @@ export default {
 
               <BCol sm="8">
               <div class="text-sm-end">
-                <div class="text-sm-end">
-              <BButton variant="primary" class="me-1" @click="showCreateModal = true">Ajouter un utilisateur</BButton>
-            </div>
+              <div class="text-sm-end">
+                <BButton variant="primary" class="me-1" @click="showCreateModal = true">Ajouter un utilisateur</BButton>
+              </div>
               </div>
             </BCol>
 
@@ -323,13 +323,14 @@ export default {
         </option>
       </BFormSelect>
     </BFormGroup>  
-  </BForm>
-
-  <BRow>
+    <BRow>
     <BCol>
-      <BButton variant="success" class="w-lg" >Créer</BButton>
+      <BButton variant="success" type="submit"  class="w-lg" >Créer</BButton>
     </BCol>
   </BRow>
+  </BForm>
+
+
 </BModal>
 
 
@@ -376,151 +377,3 @@ export default {
     </BModal>
   </Layout>
 </template>
-<!--div class="table-responsive">
-
-
-
-
-<BCol lg="12">
-              <BCard no-body>
-                <BCardBody class="pb-0">
-                  <BCardTitle>Articles facture</BCardTitle>
-                  <div class="mt-2 text-end">
-                    <BButton variant="primary" class="me-1" @click="showCreateModal = true">Ajouter une nouvelle ligne</BButton>
-                  </div>
-  
-                  <BCol sm="6" md="4" xl="3">
-                    <div class="my-4 text-center">
-                    <BModal id="modal-xl" size="xl" title="Ajouter des produits" v-model="showCreateModal" title-class="font-18" hide-footer>
-                      <div class="modal-body">
-                        <ul class="product-list">
-                          <li v-for="(item, index) in produit" :key="item.id" class="product-item">
-                            <div class="product-field">
-                              <strong>Numéro</strong>
-                              <p>{{ index + 1 }}</p>
-                            </div>
-                            <div class="product-field">
-                              <strong>Nom</strong>
-                              <p>{{ item.name }}</p>
-                            </div>
-                            <div class="product-field">
-                              <strong>Description</strong>
-                              <p>{{ item.description }}</p>
-                            </div>
-                            <div class="product-field">
-                              <button @click="addCart(item)" class="add-button">
-                                <i class="mdi mdi-plus"></i> 
-                              </button>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                    </BModal>
-                    </div>
-                  </BCol>
-
-
-
-
-
-
-
-
-
-                    <BTableSimple class="table-custom mb-0">
-                      <BThead>
-                        <BTr>
-                          <BTh class="text-nowrap">Item</BTh>
-                          <BTh class="text-nowrap">Description</BTh>
-                          <BTh class="text-nowrap"></BTh>
-                          <BTh class="text-nowrap"></BTh>
-                          <BTh class="text-nowrap">Prix unitaire</BTh>
-                          <BTh class="text-nowrap">Quantité</BTh>
-                          <BTh class="text-nowrap">Total</BTh>
-                          <BTh class="text-nowrap">Action</BTh>
-                        </BTr>
-                      </BThead>
-                      <BTbody>
-                        <BTr v-for="(itemcart, i) in form.items" :key="itemcart.id">
-                          <BTh scope="row" class="text-nowrap" v-if="itemcart.product">{{ itemcart.product.item_code }}</BTh>
-                          <BTd class="text-nowrap">{{ itemcart.product.description }}</BTd>
-                          <BTd class="text-nowrap"></BTd>
-                          <BTd class="text-nowrap"></BTd>
-                          <BTd class="text-nowrap">
-                            <input 
-                              type="text" 
-                              class="form-control" 
-                              v-model="itemcart.prix_unitaire" 
-                              @input="sub_total(i)"
-                              placeholder="0.00"
-                              required
-                            >
-                            <div v-if="!itemcart.price" class="text-danger">Veuillez entrer le prix unitaire.</div>
-                          </BTd>
-                          <BTd class="text-nowrap">
-                            <input 
-                              type="number" 
-                              class="form-control" 
-                              v-model.number="itemcart.quantity" 
-                              @input="sub_total(i)"
-                              min="1"
-                              step="1"
-                              placeholder="0"
-                              required
-                            >
-                            <div v-if="!itemcart.quantity" class="text-danger">Veuillez entrer la quantité.</div>
-                          </BTd>
-                          <BTd class="text-nowrap">{{ itemcart.quantity * itemcart.prix_unitaire }}</BTd>
-                          <BTd class="text-nowrap">
-                          <ul class="list-unstyled hstack gap-1 mb-0">
-                           
-                            <li data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Delete">
-                              <BLink href="#" @click="deleteInvoiceItem(itemcart.id,i)" class="btn btn-sm btn-soft-danger">
-                                <i class="mdi mdi-delete-outline"></i>
-                              </BLink>
-                            </li>
-                          </ul>
-                        </BTd>
-                        </BTr>
-                        <BTr>
-                          <BRow>
-                            <BCol sm="6">
-                              <div class="mb-3">
-                                <label for="email-text">Texte Email</label>
-                                <textarea id="email-text" v-model="form.email_text" name="email-text" class="form-control" rows="8" cols="500"></textarea>
-                              </div>
-                            </BCol>
-                            <BCol sm="6">
-                              <div class="mb-3">
-                                <label for="somme">Total</label>
-                                <input id="somme" v-model="somme" name="somme" placeholder="Somme" type="text" class="form-control" readonly />
-                              </div>
-                              <div class="mb-3">
-                                <label for="discount">Remise</label>
-                                <input 
-                                  id="discount" 
-                                  v-model.number="discount" 
-                                  name="discount" 
-                                  placeholder="Discount" 
-                                  type="number" 
-                                  class="form-control" 
-                                  @input="applyDiscount"
-                                  min="0"
-                                  step="0.01"
-                                />
-                              </div>
-                              <div class="mb-3">
-                                <label for="total">Total après remise</label>
-                                <input id="total" v-model="total" name="total" placeholder="Total" type="text" class="form-control" readonly />
-                              </div>
-                            </BCol>
-                          </BRow>
-                          <BCol mb="12">
-                            <div class="mt-2 text-end">
-                              <BButton variant="success" class="w-lg" @click="onSave()">Enregistrer la facture</BButton>
-                            </div>
-                          </BCol>
-                        </BTr>
-                      </BTbody>
-                    </BTableSimple>
-                  </div-->

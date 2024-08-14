@@ -1,8 +1,24 @@
 export const menuItems = [
     {
         id: 1,
-        label: "DASHBOARD",
+        label: "menuitems.menu.text",
         isTitle: false,
+    },
+
+
+    {
+        id: 2,
+        label: "Tableau de bord",
+        icon: "bx-home-circle",
+        subItems: [
+            {
+                id: 3,
+                label: "menuitems.dashboards.list.default",
+                link: "/",
+                parentId: 2
+            },           
+
+        ]
     },
 
    
