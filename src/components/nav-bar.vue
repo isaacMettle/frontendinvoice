@@ -140,7 +140,7 @@ export default {
               <img src="@/assets/images/logo-light.svg" alt height="22" />
             </span>
             <span class="logo-lg">
-              <img src="@/assets/images/logo-light.png" alt height="19" />
+              <img src="@/assets/images/wequipu.jpg" alt height="50" />
             </span>
           </router-link>
         </div>

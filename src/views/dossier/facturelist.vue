@@ -94,7 +94,7 @@ const sendInvoice = async (invoiceId) => {
 
 
 const onShow = (id) => {
-  router.push(`show/${id}`);
+  router.push(`showC/${id}`);
 };
 
 const deleteInvoice = async (invoiceId) => {

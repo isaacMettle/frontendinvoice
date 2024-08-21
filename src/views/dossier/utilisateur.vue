@@ -68,6 +68,14 @@ export default {
       const role = this.Roles.find(r => r.id === roleId);
       return role ? role.name : 'Unknown';
     },
+
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
+    validateEmail() {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      this.emailInvalid = !emailPattern.test(this.newUser.email);
+    },
     
     async createUser() {
       this.errors = {};
@@ -276,63 +284,63 @@ export default {
     <!-- Modal for creating a new user -->
                 <!-- Modal de Création d'Utilisateur -->
                 <BModal
-  v-model="showCreateModal"
-  title="Créer un Utilisateur"
-  size="lg" 
-  ok-only 
->
-  <BForm @submit.prevent="createUser">
-    <BFormGroup label="Nom" label-for="user-name">
-      <BFormInput
-        id="user-name"
-        v-model="newUser.name"
-        required
-        placeholder="Entrez le nom de l'utilisateur"
-      />
-    </BFormGroup>
+    v-model="showCreateModal"
+    title="Créer un Utilisateur"
+    size="lg"
+  >
+    <BForm @submit.prevent="createUser">
+      <BFormGroup label="Nom" label-for="user-name">
+        <BFormInput
+          id="user-name"
+          v-model="newUser.name"
+          required
+          placeholder="Entrez le nom de l'utilisateur"
+        />
+      </BFormGroup>
 
-    <BFormGroup label="Email" label-for="user-email">
-      <BFormInput
-        id="user-email"
-        v-model="newUser.email"
-        type="email"
-        required
-        placeholder="Entrez l'email de l'utilisateur"
-      />
-    </BFormGroup>
+      <BFormGroup label="Email" label-for="user-email">
+        <BFormInput
+          id="user-email"
+          v-model="newUser.email"
+          type="email"
+          required
+          placeholder="Entrez l'email de l'utilisateur"
+          :class="{ 'is-invalid': emailInvalid }"
+          @input="validateEmail"
+        />
+        <BFormInvalidFeedback v-if="emailInvalid">
+          Veuillez entrer une adresse email valide.
+        </BFormInvalidFeedback>
+      </BFormGroup>
 
-    <BFormGroup label="Mot de passe" label-for="user-password">
-      <BFormInput
-        id="user-password"
-        v-model="newUser.password"
-        type="password"
-        required
-        placeholder="Entrez le mot de passe"
-      />
-    </BFormGroup>
-
-    <BFormGroup label="Rôle" label-for="user-role">
-      <BFormSelect
-        id="user-role"
-        v-model="newUser.role_id"
-        required
-      >
-        <option value="">Sélectionner un rôle</option>
-        <option v-for="role in Roles" :key="role.id" :value="role.id">
-          {{ role.name }}
-        </option>
-      </BFormSelect>
-    </BFormGroup>  
-    <BRow>
-    <BCol>
-      <BButton variant="success" type="submit"  class="w-lg" >Créer</BButton>
-    </BCol>
-  </BRow>
-  </BForm>
+      <BFormGroup label="Mot de passe" label-for="user-password">
+        <BInputGroup>
+          <BFormInput
+            id="user-password"
+            v-model="newUser.password"
+            :type="showPassword ? 'text' : 'password'"
+            required
+            placeholder="Entrez le mot de passe"
+          />
+          <BInputGroupAppend>
+            <BButton variant="outline-secondary" @click="togglePasswordVisibility">
+              <i :class="showPassword ? 'mdi mdi-eye-off' : 'mdi mdi-eye'"></i>
+            </BButton>
+          </BInputGroupAppend>
+        </BInputGroup>
+      </BFormGroup>
+      <BFormGroup label="Rôle" label-for="role_id">
+          <BFormSelect v-model="newUser.role_id" :options="Roles.map(role => ({ value: role.id, text: role.name }))" id="role_id"></BFormSelect>
+      </BFormGroup>
 
 
-</BModal>
-
+      <BRow>
+        <BCol class="mt-3">
+          <BButton variant="success" type="submit" class="w-lg">Créer</BButton>
+        </BCol>
+      </BRow>
+    </BForm>
+  </BModal>
 
     
 

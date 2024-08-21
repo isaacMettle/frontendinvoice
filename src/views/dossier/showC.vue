@@ -15,7 +15,7 @@ const props = defineProps({
 });
 
 const form = ref({ id:'' });
-let invoices = ref([]);
+//let invoices = ref([]);
 
 const getInvoice = async () => {
     try {
@@ -28,7 +28,7 @@ const getInvoice = async () => {
     }
 };
 
-const updateApprobation = async (status) => {
+/*const updateApprobation = async (status) => {
   try {
     await axios.put(`http://127.0.0.1:8000/api/updateInvoice/${form.value.id}`, {
       approbation: status
@@ -49,7 +49,7 @@ const getInvoices1 = async () => {
   } catch (error) {
     console.error('Erreur lors de la récupération des factures:', error);
   }
-};
+};*/
 
 const print = () =>{
   window.print()
@@ -139,8 +139,8 @@ onMounted(() => {
             </div>
            
             <div class="d-print-none d-flex align-items-center">
-              <BButton class="me-2" variant="warning" @click="updateApprobation('non approuver')">Non approuver</BButton>
-              <BButton class="me-2" variant="success" @click="updateApprobation('approuver')">Approuver</BButton>
+              <!--BButton class="me-2" variant="warning" @click="updateApprobation('non approuver')">Non approuver</BButton>
+              <BButton class="me-2" variant="success" @click="updateApprobation('approuver')">Approuver</BButton-->
               <BLink class="btn btn-success waves-effect waves-light" @click="print()"><i class="fa fa-print"></i></BLink>
             </div>
           </BCardBody>

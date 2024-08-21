@@ -142,13 +142,9 @@ export default {
               </BCol>
               <BCol sm="8">
                 <div class="text-sm-end">
-                  <BButton variant="success" class="btn-rounded mb-2 me-2" @click="showModal = !showModal">
-                    <i class="mdi mdi-plus me-1"></i> Ajouter un produit
-                  </BButton>
+                  <BButton variant="primary" class="me-1" @click="showModal = !showModal">Ajouter un produit</BButton>                 
                   <router-link to="/dossier/category">
-                    <BButton variant="success" class="btn-rounded mb-2 me-2">
-                      <i class="mdi mdi-plus me-1"></i> Ajouter une catégorie
-                    </BButton>
+                    <BButton variant="primary" class="me-1" >Ajouter une catégorie</BButton>                    
                   </router-link>
                 </div>
               </BCol>
