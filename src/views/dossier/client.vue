@@ -16,6 +16,7 @@ export default {
         NIF: '',
         email: '',
         address: '',
+        password: '',
       },
       editClientData: {
         id: null,
@@ -198,6 +199,13 @@ export default {
                 <label for="address" class="form-label">Adresse</label>
                 <input id="address" v-model="newClient.address" type="text" class="form-control" />
                 <div v-if="errors.address" class="text-danger mt-1">{{ errors.address[0] }}</div>
+              </div>
+            </BCol>
+            <BCol cols="12">
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input id="password" v-model="newClient.password" type="text" class="form-control" />
+                <div v-if="errors.password" class="text-danger mt-1">{{ errors.password[0] }}</div>
               </div>
             </BCol>
           </BRow>

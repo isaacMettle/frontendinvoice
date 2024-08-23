@@ -3,51 +3,67 @@ import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 import axios from 'axios';
 import { useRouter } from "vue-router";
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineProps, nextTick } from 'vue';
 
 const router= useRouter();
 const clients = ref([]);
 const produit = ref([]);
 const listCart = ref([]);
 const showCreateModal = ref(false);
-const selectedClientId = ref(null);
+//const selectedClientId = ref(null);
 const today = new Date().toISOString().split('T')[0];
-
-
-
-const form = ref({
-  invoice_number: '',
-  client_id: '',
-  date: '',
-  due_date: '',
-  note: '',
-  email_text: '',
-  items: [],
-});
-
-/*const editClientData = ref({
-  id: null,
-  name: '',
-  NIF: '',
-  email: '',
-  address: '',
-});*/
-
 const somme = ref(0);
 const discount = ref(0);
 const total = ref(0);
 
+
+let form = ref({
+  id:'',
+  
+})
+
+const props = defineProps({
+    id: {
+        type: String,
+        default: ''
+    }
+});
+
+const getInvoice = async () => {
+    try {
+        console.log('Fetching invoice with ID:', props.id);
+        let response = await axios.get(`http://127.0.0.1:8000/api/edit_invoice/${props.id}`);
+        console.log('form1', response.data.invoice);
+        form.value = response.data.invoice;
+
+          // Assurez-vous que la valeur de discount est récupérée
+          discount.value = form.value.discount || 0;
+        
+        // Remplir listCart avec les items de la facture
+        listCart.value = form.value.items.map(item => ({
+            product_id: item.product.id,
+            id: item.id,
+            item_code: item.product.item_code,
+            description: item.product.description,
+            price: item.product.price,
+            quantity: item.quantity,
+            total: item.product.price * item.quantity
+        }));
+        
+        // Calculer les totaux initiaux
+        Total();
+    } catch (error) {
+        console.error('Erreur lors de la sélection de la facture:', error);
+    }
+};
+
 const indexForm = async()=>{
       let response =await axios.get('http://127.0.0.1:8000/api/create_invoice');
-      console.log('form',response.data);
+      //console.log('form',response.data);
       form.value=response.data
 
     }
 
-     /* const deleteCart = (index) => {
-      listCart.value.splice(index, 1);
-      console.log('Contenu actuel du panier après suppression:', listCart.value);
-    }; */
 
   const addCart = (item) => {
   const itemcart = {
@@ -59,6 +75,7 @@ const indexForm = async()=>{
     quantity: item.quantity,
     total: 0
   };
+  //listCart.value.push(itemcart);
   listCart.value.push(itemcart);
   console.log('Ajout de l\'article au panier:', itemcart);
   console.log('Contenu actuel du panier:', listCart.value);
@@ -96,45 +113,15 @@ const validateCartItems = () => {
   return true;
 };
 
-
-const onSave = async () => {
-  if (!selectedClientId.value || !form.value.due_date) {
-    alert('Veuillez remplir tous les champs obligatoires.');
-    return;
-  }
-
-  if (validateCartItems()) {
-    Total(); // Update somme and total
-
-    const formData = new FormData();
-    formData.append('invoice_number', form.value.invoice_number);
-    formData.append('sub_total', somme.value);
-    formData.append('total', total.value);
-    formData.append('discount', discount.value);
-    formData.append('client_id', selectedClientId.value);
-    formData.append('date', form.value.date);
-    formData.append('due_date', form.value.due_date);
-    formData.append('email_text', form.value.email_text);
-    formData.append('note', form.value.note);
-    formData.append('invoice_item', JSON.stringify(listCart.value)); // Convert listCart to JSON string
-
-    try {
-      await axios.post('http://127.0.0.1:8000/api/add_invoice', formData);
-      listCart.value = [];
-      router.push('facturelist');
-    } catch (error) {
-      console.error('Erreur lors de la sauvegarde de la facture:', error);
-    }
-  }
-};
-
-
-
-
 onMounted(() => {
   fetchClients();
   fetchProduit();
   indexForm();
+  if (props.id) {
+        getInvoice();
+    } else {
+        console.error('No ID provided');
+    }
 });
 
 const fetchClients = async () => {
@@ -155,11 +142,14 @@ const fetchProduit = async () => {
   }
 };
 
-const deleteInvoiceItem = (id, index) => {
+
+const deleteInvoiceItem = async (id, index) => {
   form.value.items.splice(index, 1);
 
+  await nextTick(); // Attendre que la mise à jour de DOM soit complétée
+
   if (id !== undefined) {
-    axios.delete(`http://127.0.0.1:8000/api/delete_invoice_items/${id}`)
+    axios.delete(`http://127.0.0.1:8000/api/deleteInvoiceItems/${id}`)
       .then(response => {
         console.log('Item deleted successfully:', response);
       })
@@ -170,11 +160,49 @@ const deleteInvoiceItem = (id, index) => {
 }
 
 
-/*const editClient = (clientId) => {
-  const client = clients.value.find(c => c.id === clientId);
-  editClientData.value = { ...client };
-  showCreateModal.value = true;
-};*/
+
+
+const onEdit = async () => {
+  // Assurez-vous que form.value.items est mis à jour avec les articles du panier
+  form.value.items = listCart.value;
+
+  console.log('Contenu des items:', form.value.items);
+
+  if (form.value.items.length >= 1) {
+    if (!form.value.client_id || !form.value.due_date) {
+      alert('Veuillez remplir tous les champs obligatoires.');
+      return;
+    }
+
+    if (validateCartItems()) {
+      Total();
+
+      const formData = new FormData();
+      formData.append('invoice_number', form.value.invoice_number);
+      formData.append('sub_total', somme.value);
+      formData.append('total', total.value);
+      formData.append('discount', discount.value);
+      formData.append('client_id', form.value.client_id);
+      formData.append('date', form.value.date);
+      formData.append('due_date', form.value.due_date);
+      formData.append('email_text', form.value.email_text);
+      formData.append('note', form.value.note);
+      formData.append('invoice_item', JSON.stringify(form.value.items));
+
+      try {
+        await axios.post(`http://127.0.0.1:8000/api/modifier_invoice/${form.value.id}`, formData);        
+        form.value.items = [];
+        listCart.value = [];  // Réinitialisez le panier après l'envoi
+        router.push('facturelist');
+      } catch (error) {
+        console.error('Erreur lors de la sauvegarde de la facture:', error);
+      }
+    }
+  } else {
+    alert('Le panier est vide. Ajoutez au moins un article.');
+  }
+};
+
 
 </script>
 
@@ -226,7 +254,7 @@ const deleteInvoiceItem = (id, index) => {
 
 <template>
   <Layout>
-    <PageHeader title="Créer une facture" pageTitle="Comptable" />
+    <PageHeader title="Modifier une facture" pageTitle="Comptable" />
     <BRow>
       <BCol cols="12">
         <BCard>
@@ -241,13 +269,13 @@ const deleteInvoiceItem = (id, index) => {
                     <label for="client-select">Clients</label>
                     <b-form-select 
                       id="client-select" 
-                      v-model="selectedClientId" 
+                      v-model="form.client_id" 
                       :options="clients.map(client => ({ value: client.id, text: client.name }))" 
                       @change="handleClientChange" 
                       placeholder="Sélectionner un client"
                       required
                     ></b-form-select>
-                    <div v-if="!selectedClientId" class="text-danger">Veuillez sélectionner un client.</div>
+                    <div v-if="!form.client_id" class="text-danger">Veuillez sélectionner un client.</div>
                   </div>
                   <div class="mb-3">
                     <label for="date">Date</label>
@@ -322,65 +350,60 @@ const deleteInvoiceItem = (id, index) => {
                 </BCol>
 
                 <div class="table-responsive">
-                  <BTableSimple class="table-custom mb-0">
-                    <BThead>
-                      <BTr>
-                        <BTh class="text-nowrap">Item</BTh>
-                        <BTh class="text-nowrap">Description</BTh>
-                        <BTh class="text-nowrap"></BTh>
-                        <BTh class="text-nowrap"></BTh>
-                        <BTh class="text-nowrap">Prix unitaire</BTh>
-                        <BTh class="text-nowrap">Quantité</BTh>
-                        <BTh class="text-nowrap">Total</BTh>
-                        <BTh class="text-nowrap">Action</BTh>
-                      </BTr>
-                    </BThead>
-                    <BTbody>
-                      <BTr v-for="(itemcart, i) in listCart" :key="itemcart.id">
-                        <BTh scope="row" class="text-nowrap">{{ itemcart.item_code }}</BTh>
-                        <BTd class="text-nowrap">{{ itemcart.description }}</BTd>
-                        <BTd class="text-nowrap"></BTd>
-                        <BTd class="text-nowrap"></BTd>
-                        <BTd class="text-nowrap">
-                          <input 
-                            type="text" 
-                            class="form-control" 
-                            v-model="itemcart.price" 
-                            @input="sub_total(i)"
-                            placeholder="0.00"
-                            required
-                          >
-                          <div v-if="!itemcart.price" class="text-danger">Veuillez entrer le prix unitaire.</div>
-                        </BTd>
-                        <BTd class="text-nowrap">
-                          <input 
-                            type="number" 
-                            class="form-control" 
-                            v-model.number="itemcart.quantity" 
-                            @input="sub_total(i)"
-                            min="1"
-                            step="1"
-                            placeholder="0"
-                            required
-                          >
-                          <div v-if="!itemcart.quantity" class="text-danger">Veuillez entrer la quantité.</div>
-                        </BTd>
-                        <BTd class="text-nowrap">{{ itemcart.total }}</BTd>
-                        <BTd class="text-nowrap">
-                          <ul class="list-unstyled hstack gap-1 mb-0">
-                            <!--li data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Edit">
-                              <BLink href="#" @click="editClient(client)" class="btn btn-sm btn-soft-info">
-                                <i class="mdi mdi-pencil-outline"></i>
-                              </BLink>
-                            </li-->
-                            <li data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Delete">
-                              <BLink href="#" @click="deleteInvoiceItem(itemcart.id,i)" class="btn btn-sm btn-soft-danger">
+    <BTableSimple class="table-custom mb-0">
+        <BThead>
+            <BTr>
+                <BTh class="text-nowrap">Item</BTh>
+                <BTh class="text-nowrap">Description</BTh>
+                <BTh class="text-nowrap"></BTh>
+                <BTh class="text-nowrap"></BTh>
+                <BTh class="text-nowrap">Prix unitaire</BTh>
+                <BTh class="text-nowrap">Quantité</BTh>
+                <BTh class="text-nowrap">Total</BTh>
+                <BTh class="text-nowrap">Action</BTh>
+            </BTr>
+        </BThead>
+        <BTbody>
+            <BTr v-for="(itemcart, i) in listCart" :key="itemcart.id">
+                <BTh scope="row" class="text-nowrap">{{ itemcart.item_code }}</BTh>
+                <BTd class="text-nowrap">{{ itemcart.description }}</BTd>
+                <BTd class="text-nowrap"></BTd>
+                <BTd class="text-nowrap"></BTd>
+                <BTd class="text-nowrap">
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        v-model="itemcart.price" 
+                        @input="sub_total(i)"
+                        placeholder="0.00"
+                        required
+                    >
+                    <div v-if="!itemcart.price" class="text-danger">Veuillez entrer le prix unitaire.</div>
+                </BTd>
+                <BTd class="text-nowrap">
+                    <input 
+                        type="number" 
+                        class="form-control" 
+                        v-model.number="itemcart.quantity" 
+                        @input="sub_total(i)"
+                        min="1"
+                        step="1"
+                        placeholder="0"
+                        required
+                    >
+                    <div v-if="!itemcart.quantity" class="text-danger">Veuillez entrer la quantité.</div>
+                </BTd>
+                <BTd class="text-nowrap">{{ itemcart.total }}</BTd>
+                <BTd class="text-nowrap">
+                    <ul class="list-unstyled hstack gap-1 mb-0">
+                        <li data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Delete">
+                            <BLink href="#" @click="deleteInvoiceItem(itemcart.id,i)" class="btn btn-sm btn-soft-danger">
                                 <i class="mdi mdi-delete-outline"></i>
-                              </BLink>
-                            </li>
-                          </ul>
-                        </BTd>
-                      </BTr>
+                            </BLink>
+                        </li>
+                    </ul>
+                </BTd>
+            </BTr>
                       <BTr>
                         <BRow>
                           <BCol sm="6">
@@ -415,8 +438,8 @@ const deleteInvoiceItem = (id, index) => {
                           </BCol>
                         </BRow>
                         <BCol mb="12">
-                          <div class="mt-2 text-end"  @click="onSave()">
-                            
+                          <div class="mt-2 text-end"  >
+                            <BButton variant="success" class="w-lg" @click="onEdit(form.id)">Enregistrer la facture</BButton>
                           </div>
                         </BCol>
                       </BTr>

@@ -25,7 +25,7 @@ const formData = ref({
 const showUpdateModal = ref(false);
 
 onMounted(async () => {
-  await getInvoices1();
+  await getInvoices();
 });
 
 watch(showEditModal, (newValue) => {
@@ -35,7 +35,7 @@ watch(showEditModal, (newValue) => {
   }
 });
 
-const getInvoices1 = async () => {
+const getInvoices = async () => {
   try {
     let response = await axios.get('http://127.0.0.1:8000/api/listInvoice');
     invoices.value = response.data.invoices;
@@ -68,7 +68,7 @@ const updateInvoice = async () => {
 
     console.log(response.data.message);
     showUpdateModal.value = false;
-    await getInvoices1();
+    await getInvoices();
   } catch (error) {
     const errorMessage = error.response?.data?.errors || error.message;
     console.error('Erreur lors de la mise à jour de la facture:', errorMessage);
@@ -80,29 +80,27 @@ const onShow = (id) => {
 };
 
 const deleteInvoice = async (invoiceId) => {
-  if(confirm("Voulez-vous vraiment supprimer cette facture?")){
-    try {
+  try {
     await axios.delete(`http://127.0.0.1:8000/api/deleteInvoices/${invoiceId}`);
-    await getInvoices1();
+    await getInvoices();
   } catch (error) {
     console.error('Erreur lors de la suppression de la facture:', error);
-  }
   }
 };
 
 
 
-const updateApprobation = async (invoice) => {
+/*const updateApprobation = async (invoice) => {
   try {
     await axios.put(`http://127.0.0.1:8000/api/updateInvoice/${invoice.id}`, {
       approbation: invoice.approbation
     });
     console.log('Approbation mise à jour avec succès');
-    await getInvoices1(); // Actualiser les factures après la mise à jour
+    await getInvoices(); // Actualiser les factures après la mise à jour
   } catch (error) {
     console.error('Erreur lors de la mise à jour de l\'approbation:', error);
   }
-};
+};*/
 
 // Méthode pour filtrer les factures "en attente"
 const filterPendingInvoices = () => {
@@ -193,13 +191,8 @@ const applyFilters = () => {
                     <BTd v-else>{{ invoice.client }}</BTd>
                     <BTd>{{ invoice.due_date }}</BTd>
                     <BTd>{{ invoice.total }}</BTd>
-                    <BTd>
-                      <BFormSelect
-                        v-model="invoice.approbation"
-                        :options="['en attente','approuver', 'non approuver']"
-                        @change="updateApprobation(invoice)"
-                      ></BFormSelect>
-                    </BTd>
+                  <BTd>{{ invoice.approbation }}</BTd>
+                    
                     <BTd class="text-center">
                       <ul class="list-unstyled d-flex justify-content-center gap-2 mb-0">
                         <li>
