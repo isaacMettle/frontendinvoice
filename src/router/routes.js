@@ -9,7 +9,7 @@ export default [
 
   
   {
-    path: "/",
+    path: "/login",
     name: "login",
     component: () => import("../views/account/login"),
     meta: {
@@ -110,10 +110,18 @@ export default [
   },
 
   {
-    path: "/dossier/client",
-    name: "page client",
-    //meta: { title: "client", authRequired: true },
-    component: () => import("../views/dossier/client.vue"),
+    path: "/",
+    name: "page Accueil",
+    //meta: { title: "Accueil", authRequired: true },
+    component: () => import("../views/dossier/Accueil.vue"),
+   
+  },
+
+  {
+    path: "/dossier/statistiques",
+    name: "page statistiques",
+    //meta: { title: "statistique", authRequired: true },
+    component: () => import("../views/dossier/statistiques.vue"),
    
   },
 
@@ -147,6 +155,15 @@ export default [
     //meta: { title: "category", authRequired: true },
     component: () => import("../views/dossier/category.vue")
   },
+
+
+  {
+    path: "/dossier/paiement",
+    name: "page paiement",
+    //meta: { title: "category", authRequired: true },
+    component: () => import("../views/dossier/paiement.vue")
+  },
+
 
   {
     path: "/dossier/utilisateur",

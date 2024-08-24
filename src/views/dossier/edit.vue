@@ -349,7 +349,7 @@ const onEdit = async () => {
                   </div>
                 </BCol>
 
-                <div class="table-responsive">
+    <div class="table-responsive">
     <BTableSimple class="table-custom mb-0">
         <BThead>
             <BTr>

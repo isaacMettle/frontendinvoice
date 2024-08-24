@@ -3,16 +3,12 @@ export const menuItems = [
         id: 1,
         label: "menuitems.menu.text",
         isTitle: true,
-
         roles: ['Admin', 'Chef Comptable', 'Comptable']
     },
-
-
-
     {
         id: 2,
         label: "Tableau de bord",
-        icon: "bx-home-circle",
+        icon: "bx-home",
         roles: ['Admin', 'Chef Comptable', 'Comptable'],
         subItems: [
             {
@@ -21,91 +17,75 @@ export const menuItems = [
                 link: "/default",
                 roles: ['Admin', 'Chef Comptable', 'Comptable'],
                 parentId: 2
-            },           
-
+            }
         ]
     },
-
-   
-
-
     {
-        id: 5,
+        id: 3,  // Changed id to avoid duplicate
         label: "Utilisateurs",
         icon: "bx-user",
         link: "/dossier/Utilisateur",
-        roles: ['Admin'],
-    
+        roles: ['Admin']
     },
-
     {
-        id: 5,
+        id: 4,  // Changed id to avoid duplicate
         label: "Clients",
-        icon: "bx-user",
+        icon: "bx-user-circle",
         link: "/dossier/client",
         roles: ['Admin', 'Comptable']
-    
     },
-
     {
-        id: 3,
+        id: 5,
         label: "Factures",
         icon: "bx-receipt",
         roles: ['Admin', 'Chef Comptable', 'Comptable'],
-       subItems: [
-           {
-               id: 4,
-               label: "Creer une Facture",
-               link: "/dossier/facturelist",//il s'agit du lien ou aura acces au boutton pour creer la facture 
-               parentId: 3,
-               roles: ['Comptable', 'Admin']
-           },
-
-           {
-               id: 5,
-               label: "Liste des factures",
-               link: "/dossier/facturedetail",// il s'agit du lien ou le chef comptable pourra voir la liste des factures creer et une facture specifique
-               parentId: 3,
-               roles: ['Chef Comptable', 'Admin']
-           },
-       ]
-     
+        subItems: [
+            {
+                id: 6,  // Changed id to avoid duplicate
+                label: "Creer une Facture",
+                link: "/dossier/facturelist",
+                parentId: 5,
+                roles: ['Comptable', 'Admin']
+            },
+            {
+                id: 7,  // Changed id to avoid duplicate
+                label: "Liste des factures",
+                link: "/dossier/facturedetail",
+                parentId: 5,
+                roles: ['Chef Comptable', 'Admin']
+            }
+        ]
     },
-
-
     {
-        id: 4,
+        id: 8,
         label: "Produits",
-        icon: "bx-store",
+        icon: "bx-store-alt",
         link: "/dossier/produit",
-        roles: ['Admin','Comptable']
-      
+        roles: ['Admin', 'Comptable']
     },
-
-   
-
-    /*{
-        id: 8, // Assurez-vous que cet id est unique
+    {
+        id: 9,  // Changed id to avoid duplicate
+        label: "Paiement",
+        icon: "bx-credit-card",
+        link: "/dossier/paiement",
+        roles: ['Admin', 'Client']
+    },
+    {
+        id: 10,  // Changed id to avoid duplicate
+        label: "Statistiques",
+        icon: "bx-bar-chart",
+        link: "/dossier/statistiques",
+        roles: ['Admin', 'Chef Comptable']
+    },
+    {
+        id: 11,  // Changed id to avoid duplicate
         label: "Déconnexion",
         icon: "bx-log-out",
-        roles: ['Admin', 'Chef Comptable', 'Comptable', 'Client'],
-        action: 'logout' // Ajoutez une clé action pour identifier cette option comme bouton de déconnexion
-    },*/
-   
-
-    {
-        id: 6,
-        label: "Paiement",
-        icon: "bx-receipt",
-        link: "/",
-        roles: ['Admin, Client']
-    
+        link: "/account/logout",
+        roles: ['Admin', 'Client', 'Chef Comptable', 'Comptable']
     },
-
     {
-        id: 7,
+        id: 12,
         isLayout: true
-    },
-  
+    }
 ];
-
