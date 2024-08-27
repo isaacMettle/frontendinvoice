@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
-export const useAuthStore = defineStore("authClient", {
+
+export const useAuthStore = defineStore("auth", {
     state: () => ({
         currentUser: null,
         loggedIn: false,
@@ -37,7 +38,7 @@ export const useAuthStore = defineStore("authClient", {
         setUser(user) {
             this.currentUser = user;
             this.loggedIn = true;
-            this.saveState("authClient.currentUser", user);
+            this.saveState("auth.currentUser", user);
         },
         saveState(key, state) {
             window.sessionStorage.setItem(key, JSON.stringify(state));
@@ -47,9 +48,11 @@ export const useAuthStore = defineStore("authClient", {
             this.loggedIn = false;
             localStorage.removeItem("authToken");
             localStorage.removeItem("userRole");
-            localStorage.removeItem("user");
-            axios.defaults.headers.common['Authorization'] = null;
+            localStorage.removeItem("tempUserRole");
+            sessionStorage.removeItem("auth.currentUser"); // Suppression de l'utilisateur stocké
+            axios.defaults.headers.common['Authorization'] = '';
         },
+        
         redirectRouteBasedOnRole() {
             if (this.currentUser && this.currentUser.role) {
                 const role = this.currentUser.role[0];
@@ -61,12 +64,15 @@ export const useAuthStore = defineStore("authClient", {
                     case 'Comptable':
                         return 'page facturelist';
                     case 'Client':
-                        return 'Creer une Facture';    
+                        return 'default';    
                     default:
                         return 'default';
                 }
             }
             return 'default';
         }
-    }
+
+        
+       
+    }    
 });

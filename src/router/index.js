@@ -58,7 +58,7 @@ router.beforeEach((routeTo, routeFrom, next) => {
             next({ name: "login", query: { redirectFrom: routeTo.fullPath } });
         }
     } else {
-        const publicPages = ["/", "/accueil", "/forgot-password"];
+        const publicPages = ["/", "/accueil", "/forgot-password","/login", "/loginclient"];
         const authpage = !publicPages.includes(routeTo.path);
         const loggeduser = JSON.parse(localStorage.getItem("user"));
         const userRole = loggeduser ? loggeduser.role[0] : null;

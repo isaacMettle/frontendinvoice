@@ -1,4 +1,5 @@
 import { useAuthStore, useAuthFakeStore } from "@/state/pinia";
+
 export default [
   {
     path: "/default",
@@ -14,6 +15,26 @@ export default [
     component: () => import("../views/account/login"),
     meta: {
       title: "Login",
+      beforeResolve(routeTo, routeFrom, next) {
+        const auth = useAuthStore();
+        // If the user is already logged in
+        // if (store.getters["auth/loggedIn"]) {
+        if (auth.loggedIn) {
+          // Redirect to the home page instead
+          next({ name: "default" });
+        } else {
+          // Continue to the login page
+          next();
+        }
+      }
+    }
+  },
+  {
+    path: "/loginclient",
+    name: "loginclient",
+    component: () => import("../views/account/loginclient"),
+    meta: {
+      title: "loginclient",
       beforeResolve(routeTo, routeFrom, next) {
         const auth = useAuthStore();
         // If the user is already logged in
@@ -74,23 +95,27 @@ export default [
     component: () => import("../views/account/logout"),
     meta: {
       title: "Logout",
-      authRequired: true, // If you want to ensure the user is authenticated before accessing this route
+      authRequired: true,
       beforeResolve(routeTo, routeFrom, next) {
         const auth = useAuthStore();
         const authFake = useAuthFakeStore();
-  
-        // Call the appropriate logout method based on the authentication strategy
+
         if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
           auth.logOut();
         } else {
           authFake.logout();
         }
-  
-        // Navigate back to the login page after logging out
-        next({ path: '/' });
+        const authRequiredOnPreviousRoute = routeFrom.matched.some((route) =>
+          route.push("/login")
+        );
+        // Navigate back to previous page, or home as a fallback
+        next(
+          authRequiredOnPreviousRoute ? { name: "default" } : { ...routeFrom }
+        );
       }
     }
   },
+
   
   // Redirect any unmatched routes to the 404 page. This may
   // require some server configuration to work in production:
@@ -118,12 +143,20 @@ export default [
   },
 
   {
+    path: "/account/404",
+    name: "page404",
+    //meta: { title: "Accueil", authRequired: true },
+    component: () => import("../views/account/404.vue"),
+   
+  },
+
+  /*{
     path: "/dossier/statistiques",
     name: "page statistiques",
     //meta: { title: "statistique", authRequired: true },
     component: () => import("../views/dossier/statistiques.vue"),
    
-  },
+  },*/
 
   {
     path: "/dossier/show/:id",
@@ -252,7 +285,7 @@ export default [
     component: () => import("../views/sample-pages/register-2")
   },
   {
-    path: "/auth/recoverpwd",
+    path: "/recover/:token",
     name: "Recover pwd",
     //meta: { title: "Recover Password", authRequired: true },
     component: () => import("../views/sample-pages/recoverpw-sample")

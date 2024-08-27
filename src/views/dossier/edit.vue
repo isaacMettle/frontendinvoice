@@ -4,70 +4,64 @@ import PageHeader from "@/components/page-header";
 import axios from 'axios';
 import { useRouter } from "vue-router";
 import { ref, onMounted, defineProps, nextTick } from 'vue';
+import Swal from 'sweetalert2';  // Import SweetAlert2
 
-const router= useRouter();
+const router = useRouter();
 const clients = ref([]);
 const produit = ref([]);
 const listCart = ref([]);
 const showCreateModal = ref(false);
-//const selectedClientId = ref(null);
 const today = new Date().toISOString().split('T')[0];
 const somme = ref(0);
 const discount = ref(0);
 const total = ref(0);
 
-
 let form = ref({
-  id:'',
-  
-})
+  id: '',
+});
 
 const props = defineProps({
-    id: {
-        type: String,
-        default: ''
-    }
+  id: {
+    type: String,
+    default: ''
+  }
 });
 
 const getInvoice = async () => {
-    try {
-        console.log('Fetching invoice with ID:', props.id);
-        let response = await axios.get(`http://127.0.0.1:8000/api/edit_invoice/${props.id}`);
-        console.log('form1', response.data.invoice);
-        form.value = response.data.invoice;
-
-          // Assurez-vous que la valeur de discount est récupérée
-          discount.value = form.value.discount || 0;
-        
-        // Remplir listCart avec les items de la facture
-        listCart.value = form.value.items.map(item => ({
-            product_id: item.product.id,
-            id: item.id,
-            item_code: item.product.item_code,
-            description: item.product.description,
-            price: item.product.price,
-            quantity: item.quantity,
-            total: item.product.price * item.quantity
-        }));
-        
-        // Calculer les totaux initiaux
-        Total();
-    } catch (error) {
-        console.error('Erreur lors de la sélection de la facture:', error);
-    }
+  try {
+    console.log('Fetching invoice with ID:', props.id);
+    let response = await axios.get(`http://127.0.0.1:8000/api/edit_invoice/${props.id}`);
+    form.value = response.data.invoice;
+    discount.value = form.value.discount || 0;
+    listCart.value = form.value.items.map(item => ({
+      product_id: item.product.id,
+      id: item.id,
+      item_code: item.product.item_code,
+      description: item.product.description,
+      price: item.product.price,
+      quantity: item.quantity,
+      total: item.product.price * item.quantity
+    }));
+    Total();
+  } catch (error) {
+    console.error('Erreur lors de la sélection de la facture:', error);
+    Swal.fire('Erreur', 'Erreur lors de la récupération de la facture.', 'error');
+  }
 };
 
-const indexForm = async()=>{
-      let response =await axios.get('http://127.0.0.1:8000/api/create_invoice');
-      //console.log('form',response.data);
-      form.value=response.data
+const indexForm = async () => {
+  try {
+    let response = await axios.get('http://127.0.0.1:8000/api/create_invoice');
+    form.value = response.data;
+  } catch (error) {
+    console.error('Erreur lors de l\'initialisation du formulaire:', error);
+    Swal.fire('Erreur', 'Erreur lors de l\'initialisation du formulaire.', 'error');
+  }
+};
 
-    }
-
-
-  const addCart = (item) => {
+const addCart = (item) => {
   const itemcart = {
-    product_id: item.id,  // Assurez-vous que ceci soit bien l'identifiant du produit
+    product_id: item.id,
     id: item.id,
     item_code: item.item_code,
     description: item.description,
@@ -75,13 +69,10 @@ const indexForm = async()=>{
     quantity: item.quantity,
     total: 0
   };
-  //listCart.value.push(itemcart);
   listCart.value.push(itemcart);
-  console.log('Ajout de l\'article au panier:', itemcart);
-  console.log('Contenu actuel du panier:', listCart.value);
   showCreateModal.value = false;
+  Swal.fire('Ajouté!', 'Article ajouté au panier.', 'success');
 };
-
 
 const sub_total = (index) => {
   const itemcart = listCart.value[index];
@@ -100,13 +91,12 @@ const applyDiscount = () => {
 
 const validateCartItems = () => {
   if (listCart.value.length === 0) {
-    alert('Le panier est vide, ajoutez au moins un article.');
+    Swal.fire('Attention', 'Le panier est vide, ajoutez au moins un article.', 'warning');
     return false;
   }
-
   for (const item of listCart.value) {
     if (!item.product_id || !item.price || !item.quantity) {
-      alert('Chaque article de la facture doit contenir un identifiant de produit, un prix et une quantité.');
+      Swal.fire('Erreur', 'Chaque article de la facture doit contenir un identifiant de produit, un prix et une quantité.', 'error');
       return false;
     }
   }
@@ -118,10 +108,11 @@ onMounted(() => {
   fetchProduit();
   indexForm();
   if (props.id) {
-        getInvoice();
-    } else {
-        console.error('No ID provided');
-    }
+    getInvoice();
+  } else {
+    console.error('No ID provided');
+    Swal.fire('Erreur', 'Aucun ID fourni.', 'error');
+  }
 });
 
 const fetchClients = async () => {
@@ -130,6 +121,7 @@ const fetchClients = async () => {
     clients.value = response.data;
   } catch (error) {
     console.error('Erreur lors de la récupération des clients:', error);
+    Swal.fire('Erreur', 'Erreur lors de la récupération des clients.', 'error');
   }
 };
 
@@ -139,44 +131,34 @@ const fetchProduit = async () => {
     produit.value = response.data;
   } catch (error) {
     console.error('Erreur lors de la récupération des produits:', error);
+    Swal.fire('Erreur', 'Erreur lors de la récupération des produits.', 'error');
   }
 };
 
-
 const deleteInvoiceItem = async (id, index) => {
   form.value.items.splice(index, 1);
-
-  await nextTick(); // Attendre que la mise à jour de DOM soit complétée
-
+  await nextTick();
   if (id !== undefined) {
-    axios.delete(`http://127.0.0.1:8000/api/deleteInvoiceItems/${id}`)
-      .then(response => {
-        console.log('Item deleted successfully:', response);
-      })
-      .catch(error => {
-        console.error('Error deleting item:', error);
-      });
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/deleteInvoiceItems/${id}`);
+      Swal.fire('Supprimé!', 'L\'article a été supprimé avec succès.', 'success');
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'article:', error);
+      Swal.fire('Erreur', 'Erreur lors de la suppression de l\'article.', 'error');
+    }
   }
-}
-
-
-
+};
 
 const onEdit = async () => {
-  // Assurez-vous que form.value.items est mis à jour avec les articles du panier
   form.value.items = listCart.value;
-
-  console.log('Contenu des items:', form.value.items);
-
   if (form.value.items.length >= 1) {
     if (!form.value.client_id || !form.value.due_date) {
-      alert('Veuillez remplir tous les champs obligatoires.');
+      Swal.fire('Erreur', 'Veuillez remplir tous les champs obligatoires.', 'error');
       return;
     }
 
     if (validateCartItems()) {
       Total();
-
       const formData = new FormData();
       formData.append('invoice_number', form.value.invoice_number);
       formData.append('sub_total', somme.value);
@@ -190,21 +172,23 @@ const onEdit = async () => {
       formData.append('invoice_item', JSON.stringify(form.value.items));
 
       try {
-        await axios.post(`http://127.0.0.1:8000/api/modifier_invoice/${form.value.id}`, formData);        
+        await axios.post(`http://127.0.0.1:8000/api/modifier_invoice/${form.value.id}`, formData);
         form.value.items = [];
-        listCart.value = [];  // Réinitialisez le panier après l'envoi
+        listCart.value = [];
+        Swal.fire('Succès', 'La facture a été mise à jour avec succès.', 'success');
         router.push('facturelist');
       } catch (error) {
         console.error('Erreur lors de la sauvegarde de la facture:', error);
+        Swal.fire('Erreur', 'Erreur lors de la sauvegarde de la facture.', 'error');
       }
     }
   } else {
-    alert('Le panier est vide. Ajoutez au moins un article.');
+    Swal.fire('Erreur', 'Le panier est vide. Ajoutez au moins un article.', 'error');
   }
 };
 
-
 </script>
+
 
 
 <style scoped>

@@ -4,16 +4,15 @@ import PageHeader from "@/components/page-header";
 import axios from 'axios';
 import { useRouter } from "vue-router";
 import { ref, onMounted } from 'vue';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
-const router= useRouter();
+const router = useRouter();
 const clients = ref([]);
 const produit = ref([]);
 const listCart = ref([]);
 const showCreateModal = ref(false);
 const selectedClientId = ref(null);
 const today = new Date().toISOString().split('T')[0];
-
-
 
 const form = ref({
   invoice_number: '',
@@ -25,33 +24,23 @@ const form = ref({
   items: [],
 });
 
-/*const editClientData = ref({
-  id: null,
-  name: '',
-  NIF: '',
-  email: '',
-  address: '',
-});*/
-
 const somme = ref(0);
 const discount = ref(0);
 const total = ref(0);
 
-const indexForm = async()=>{
-      let response =await axios.get('http://127.0.0.1:8000/api/create_invoice');
-      console.log('form',response.data);
-      form.value=response.data
+const indexForm = async () => {
+  try {
+    let response = await axios.get('http://127.0.0.1:8000/api/create_invoice');
+    console.log('form', response.data);
+    form.value = response.data;
+  } catch (error) {
+    Swal.fire('Erreur', 'Erreur lors de la récupération du formulaire de facture', 'error');
+  }
+};
 
-    }
-
-     /* const deleteCart = (index) => {
-      listCart.value.splice(index, 1);
-      console.log('Contenu actuel du panier après suppression:', listCart.value);
-    }; */
-
-  const addCart = (item) => {
+const addCart = (item) => {
   const itemcart = {
-    product_id: item.id,  // Assurez-vous que ceci soit bien l'identifiant du produit
+    product_id: item.id,
     id: item.id,
     item_code: item.item_code,
     description: item.description,
@@ -63,8 +52,8 @@ const indexForm = async()=>{
   console.log('Ajout de l\'article au panier:', itemcart);
   console.log('Contenu actuel du panier:', listCart.value);
   showCreateModal.value = false;
+  Swal.fire('Ajouté!', 'L\'article a été ajouté au panier.', 'success');
 };
-
 
 const sub_total = (index) => {
   const itemcart = listCart.value[index];
@@ -83,23 +72,22 @@ const applyDiscount = () => {
 
 const validateCartItems = () => {
   if (listCart.value.length === 0) {
-    alert('Le panier est vide, ajoutez au moins un article.');
+    Swal.fire('Erreur', 'Le panier est vide, ajoutez au moins un article.', 'warning');
     return false;
   }
 
   for (const item of listCart.value) {
     if (!item.product_id || !item.price || !item.quantity) {
-      alert('Chaque article de la facture doit contenir un identifiant de produit, un prix et une quantité.');
+      Swal.fire('Erreur', 'Chaque article de la facture doit contenir un identifiant de produit, un prix et une quantité.', 'warning');
       return false;
     }
   }
   return true;
 };
 
-
 const onSave = async () => {
   if (!selectedClientId.value || !form.value.due_date) {
-    alert('Veuillez remplir tous les champs obligatoires.');
+    Swal.fire('Erreur', 'Veuillez remplir tous les champs obligatoires.', 'warning');
     return;
   }
 
@@ -121,15 +109,14 @@ const onSave = async () => {
     try {
       await axios.post('http://127.0.0.1:8000/api/add_invoice', formData);
       listCart.value = [];
+      Swal.fire('Succès', 'La facture a été sauvegardée avec succès.', 'success');
       router.push('facturelist');
     } catch (error) {
       console.error('Erreur lors de la sauvegarde de la facture:', error);
+      Swal.fire('Erreur', 'Erreur lors de la sauvegarde de la facture.', 'error');
     }
   }
 };
-
-
-
 
 onMounted(() => {
   fetchClients();
@@ -143,6 +130,7 @@ const fetchClients = async () => {
     clients.value = response.data;
   } catch (error) {
     console.error('Erreur lors de la récupération des clients:', error);
+    Swal.fire('Erreur', 'Erreur lors de la récupération des clients.', 'error');
   }
 };
 
@@ -152,6 +140,7 @@ const fetchProduit = async () => {
     produit.value = response.data;
   } catch (error) {
     console.error('Erreur lors de la récupération des produits:', error);
+    Swal.fire('Erreur', 'Erreur lors de la récupération des produits.', 'error');
   }
 };
 
@@ -159,24 +148,19 @@ const deleteInvoiceItem = (id, index) => {
   form.value.items.splice(index, 1);
 
   if (id !== undefined) {
-    axios.delete(`http://127.0.0.1:8000/api/delete_invoice_items/${id}`)
+    axios.delete(`http://127.0.0.1:8000/api/deleteInvoiceItems/${id}`)
       .then(response => {
         console.log('Item deleted successfully:', response);
+        Swal.fire('Supprimé!', 'L\'article a été supprimé avec succès.', 'success');
       })
       .catch(error => {
         console.error('Error deleting item:', error);
+        Swal.fire('Erreur', 'Erreur lors de la suppression de l\'article.', 'error');
       });
   }
-}
-
-
-/*const editClient = (clientId) => {
-  const client = clients.value.find(c => c.id === clientId);
-  editClientData.value = { ...client };
-  showCreateModal.value = true;
-};*/
-
+};
 </script>
+
 
 
 <style scoped>
@@ -272,10 +256,10 @@ const deleteInvoiceItem = (id, index) => {
                     <label for="invoice_number">Numéro</label>
                     <input id="invoice_number" v-model="form.invoice_number" name="invoice_number" type="text" class="form-control" />
                   </div>
-                  <div class="mb-3">
+                  <!--div class="mb-3">
                     <label for="reference">Référence (Optionnel)</label>
                     <input id="reference" v-model="form.note" name="reference" type="text" class="form-control" />
-                  </div>
+                  </div-->
                 </BCol>
               </BRow>
             </BForm>

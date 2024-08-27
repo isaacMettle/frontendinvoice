@@ -180,7 +180,7 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('@/assets/images/blur copie.jpg'); /* Chemin vers votre image */
+    background-image: url('@/assets/images/blue.jpg'); /* Chemin vers votre image */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

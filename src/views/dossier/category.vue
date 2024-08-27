@@ -2,6 +2,7 @@
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
   components: { Layout, PageHeader },
@@ -30,6 +31,11 @@ export default {
         const response = await axios.get('http://127.0.0.1:8000/api/listCategories');
         this.categories = response.data;
       } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erreur',
+          text: 'Erreur lors de la récupération des catégories',
+        });
         console.error('Erreur lors de la récupération des catégories:', error);
       }
     },
@@ -40,10 +46,20 @@ export default {
         this.fetchCategories();
         this.showCreateCategoryModal = false;
         this.resetNewCategoryForm();
+        Swal.fire({
+          icon: 'success',
+          title: 'Succès',
+          text: 'Catégorie créée avec succès!',
+        });
         console.log('Catégorie créée avec succès:', response.data);
       } catch (error) {
         if (error.response) {
           this.errors = error.response.data.errors || {};
+          Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: 'Erreur lors de la création de la catégorie. Veuillez vérifier les champs.',
+          });
         }
       }
     },
@@ -53,23 +69,53 @@ export default {
         const response = await axios.put(`http://127.0.0.1:8000/api/updateCategories/${this.editCategory.id}`, this.editCategory);
         this.fetchCategories();
         this.showEditModal = false;
+        Swal.fire({
+          icon: 'success',
+          title: 'Succès',
+          text: 'Catégorie mise à jour avec succès!',
+        });
         console.log('Catégorie mise à jour avec succès:', response.data);
       } catch (error) {
         if (error.response) {
           this.errors = error.response.data.errors || {};
+          Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: 'Erreur lors de la mise à jour de la catégorie. Veuillez vérifier les champs.',
+          });
         }
       }
     },
     async deleteCategory(id) {
-      if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
-        try {
-          await axios.delete(`http://127.0.0.1:8000/api/deleteCategories/${id}`);
-          this.fetchCategories();
-          console.log('Catégorie supprimée avec succès');
-        } catch (error) {
-          console.error('Erreur lors de la suppression de la catégorie:', error);
+      Swal.fire({
+        title: 'Êtes-vous sûr?',
+        text: "Vous ne pourrez pas revenir en arrière!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Oui, supprimer!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios.delete(`http://127.0.0.1:8000/api/deleteCategories/${id}`)
+            .then(() => {
+              this.fetchCategories();
+              Swal.fire(
+                'Supprimée!',
+                'La catégorie a été supprimée.',
+                'success'
+              );
+            })
+            .catch(error => {
+              Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Erreur lors de la suppression de la catégorie',
+              });
+              console.error('Erreur lors de la suppression de la catégorie:', error);
+            });
         }
-      }
+      });
     },
     resetNewCategoryForm() {
       this.newCategory = {
@@ -83,6 +129,7 @@ export default {
   },
 };
 </script>
+
 
 <template>
   <Layout>

@@ -4,6 +4,7 @@ import PageHeader from "@/components/page-header";
 import { ref, onMounted, defineProps } from 'vue';
 import { useRouter } from "vue-router";
 import axios from 'axios';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 const router = useRouter();
 
@@ -25,6 +26,11 @@ const getInvoice = async () => {
         form.value = response.data.invoice;
     } catch (error) {
         console.error('Erreur lors de la récupération des éléments de la facture:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: 'Erreur lors de la récupération des éléments de la facture.',
+        });
     }
 };
 
@@ -35,10 +41,21 @@ const updateApprobation = async (status) => {
     });
     console.log('Approbation mise à jour avec succès');
     await getInvoices1();
+    Swal.fire({
+        icon: 'success',
+        title: 'Succès',
+        text: 'Approbation mise à jour avec succès.',
+    });
+    //router.push('facturedetail');
     // Optionally, redirect to the list page or show a success message
-    //router.push('/').catch(() => {});
+    //router.push('/facturedetail').catch(() => {});
   } catch (error) {
     console.error('Erreur lors de la mise à jour de l\'approbation:', error);
+    Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: 'Erreur lors de la mise à jour de l\'approbation.',
+    });
   }
 };
 
@@ -48,11 +65,21 @@ const getInvoices1 = async () => {
     invoices.value = response.data.invoices;
   } catch (error) {
     console.error('Erreur lors de la récupération des factures:', error);
+    Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: 'Erreur lors de la récupération des factures.',
+    });
   }
 };
 
 const print = () =>{
-  window.print()
+  window.print();
+  Swal.fire({
+      icon: 'info',
+      title: 'Impression',
+      text: 'La facture est prête à être imprimée.',
+  });
   router.push('/').catch(()=>{})
 }
 
@@ -64,6 +91,7 @@ onMounted(() => {
     }
 });
 </script>
+
 
 <template>
   <Layout>
@@ -104,6 +132,7 @@ onMounted(() => {
                   <BTr>
                     <BTh style="width: 70px">No.</BTh>
                     <BTh>Item</BTh>
+                    <BTh>name</BTh>
                     <BTh>Description</BTh>
                     <BTh>Prix unitaire</BTh>
                     <BTh>Quantité</BTh>
@@ -114,6 +143,7 @@ onMounted(() => {
                   <BTr v-for="(item, index) in form.items" :key="item.id">
                     <BTd>{{ index + 1 }}</BTd>
                     <BTd>{{ item.product.item_code }}</BTd>
+                    <BTd>{{ item.product.name }}</BTd>
                     <BTd>{{ item.product.description }}</BTd>
                     <BTd>{{ item.prix_unitaire }}</BTd>
                     <BTd>{{ item.quantity }}</BTd>

@@ -42,7 +42,7 @@ onMounted(() => {
         <BCard class="text-center bg-primary text-white">
           <BCardBody>
             <i class="fas fa-file-invoice fa-2x mb-3"></i>
-            <BCardTitle>Total Invoices Created</BCardTitle>
+            <BCardTitle>Facture total créer</BCardTitle>
             <h3>{{ totalInvoices }}</h3>
           </BCardBody>
         </BCard>
@@ -53,7 +53,7 @@ onMounted(() => {
         <BCard class="text-center bg-success text-white">
           <BCardBody>
             <i class="fas fa-users fa-2x mb-3"></i>
-            <BCardTitle>Registered Clients</BCardTitle>
+            <BCardTitle>Clients enregistrer</BCardTitle>
             <h3>{{ totalClients }}</h3>
           </BCardBody>
         </BCard>
@@ -64,7 +64,7 @@ onMounted(() => {
         <BCard class="text-center bg-warning text-dark">
           <BCardBody>
             <i class="fas fa-paper-plane fa-2x mb-3"></i>
-            <BCardTitle>Invoices Sent</BCardTitle>
+            <BCardTitle>Facture envoyé</BCardTitle>
             <h3>{{ sentInvoices }}</h3>
           </BCardBody>
         </BCard>
@@ -75,7 +75,7 @@ onMounted(() => {
         <BCard class="text-center bg-info text-white">
           <BCardBody>
             <i class="fas fa-dollar-sign fa-2x mb-3"></i>
-            <BCardTitle>Total Revenue</BCardTitle>
+            <BCardTitle>Revenu total</BCardTitle>
             <h3>{{ totalRevenue }}</h3>
           </BCardBody>
         </BCard>

@@ -8,7 +8,7 @@ const goToLogin = () => {
 };
 
 const goToClientArea = () => {
-  router.push('/client'); // Redirige vers l'espace client
+  router.push('/loginclient'); // Redirige vers l'espace client
 };
 </script>
 
@@ -21,7 +21,7 @@ const goToClientArea = () => {
     <!-- Sections de navigation -->
     <div class="navigation-buttons">
       <button @click="goToLogin">Connexion</button>
-      <button @click="goToClientArea">Espace Client</button>
+      <button @click="goToClientArea">Portail Client</button>
     </div>
   </div>
 

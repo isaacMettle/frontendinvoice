@@ -4,13 +4,12 @@ import PageHeader from "@/components/page-header";
 import { ref, onMounted, defineProps } from 'vue';
 import { useRouter } from "vue-router";
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const router = useRouter();
 
 const invoices = ref([]);
 const searchInvoice = ref('');
-
-
 
 const props = defineProps({
     id: {
@@ -19,9 +18,7 @@ const props = defineProps({
     }
 });
 
-const form = ref({ id:'' });
-
-
+const form = ref({ id: '' });
 
 const getInvoice = async () => {
     try {
@@ -30,19 +27,17 @@ const getInvoice = async () => {
         console.log('form', response.data.invoice);
         form.value = response.data.invoice;
     } catch (error) {
-        console.error('Erreur lors de la récupération des elements de la facture:', error);
+        Swal.fire('Erreur', 'Erreur lors de la récupération des éléments de la facture.', 'error');
     }
 };
 
-
 onMounted(async () => {
   await getInvoices1();
-
   if (props.id) {
-        getInvoice();
-    } else {
-        console.error('No ID provided');
-    }
+      getInvoice();
+  } else {
+      console.error('No ID provided');
+  }
 });
 
 const getInvoices1 = async () => {
@@ -50,7 +45,7 @@ const getInvoices1 = async () => {
     let response = await axios.get('http://127.0.0.1:8000/api/listInvoice');
     invoices.value = response.data.invoices;
   } catch (error) {
-    console.error('Erreur lors de la récupération des factures:', error);
+    Swal.fire('Erreur', 'Erreur lors de la récupération des factures.', 'error');
   }
 };
 
@@ -59,7 +54,7 @@ const search = async () => {
     let response = await axios.get(`http://127.0.0.1:8000/api/search_invoice?s=${searchInvoice.value}`);
     invoices.value = response.data.invoices;
   } catch (error) {
-    console.error('Erreur lors de la recherche des factures:', error);
+    Swal.fire('Erreur', 'Erreur lors de la recherche des factures.', 'error');
   }
 };
 
@@ -68,56 +63,51 @@ const newInvoice = async () => {
     await axios.get('http://127.0.0.1:8000/api/create_invoice');
     router.push('/dossier/ajouterfacture');
   } catch (error) {
-    console.error('Erreur lors de la création de la facture:', error);
+    Swal.fire('Erreur', 'Erreur lors de la création de la facture.', 'error');
   }
 };
 
 const sendInvoice = async (invoiceId) => {
     try {
-        // Envoyer la facture via l'API
         await axios.post(`http://127.0.0.1:8000/api/send_invoice/${invoiceId}`);
-
-        // Mettre à jour le statut de la facture en 'envoyé'
         await axios.patch(`http://127.0.0.1:8000/api/update_invoice_status/${invoiceId}`, { statut: 'envoyé' });
-
-        // Réactualiser la liste des factures pour refléter le changement
         await getInvoices1();
-
-        alert('Invoice sent and status updated successfully.');
+        Swal.fire('Succès', 'Invoice sent and status updated successfully.', 'success');
     } catch (error) {
-        console.error('Error sending invoice:', error);
-        alert('Failed to send invoice.');
+        Swal.fire('Erreur', 'Failed to send invoice.', 'error');
     }
 };
-
-
-
-
 
 const onShow = (id) => {
   router.push(`showC/${id}`);
 };
 
 const deleteInvoice = async (invoiceId) => {
-  if (confirm("Voulez-vous vraiment supprimer cette facture?")) {
+  const result = await Swal.fire({
+    title: 'Confirmer la suppression',
+    text: 'Voulez-vous vraiment supprimer cette facture?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Oui, supprimer!',
+    cancelButtonText: 'Annuler'
+  });
+
+  if (result.isConfirmed) {
     try {
-    await axios.delete(`http://127.0.0.1:8000/api/deleteInvoices/${invoiceId}`);
-    await getInvoices1();
-    console.log('Client deleted successfully');
-  } catch (error) {
-    console.error('Erreur lors de la suppression de la facture:', error);
-  }
+      await axios.delete(`http://127.0.0.1:8000/api/deleteInvoices/${invoiceId}`);
+      await getInvoices1();
+      Swal.fire('Supprimé!', 'La facture a été supprimée.', 'success');
+    } catch (error) {
+      Swal.fire('Erreur', 'Erreur lors de la suppression de la facture.', 'error');
+    }
   }
 };
 
-const onEdit = (id) =>{
-  router.push('edit/'+id)
-}
-
-/*const editInvoice = (invoice) => {
-  router.push({ name: 'EditInvoice', params: { id: invoice.id } });
-};*/
+const onEdit = (id) => {
+  router.push('edit/' + id);
+};
 </script>
+
 
 <template>
   <Layout>

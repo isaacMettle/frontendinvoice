@@ -3,6 +3,7 @@ import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
 import axios from 'axios';
 import { candidatesData } from "./Datausers";
+import Swal from 'sweetalert2'; // Importer SweetAlert2
 
 export default {
   components: { Layout, PageHeader },
@@ -48,7 +49,7 @@ export default {
   },
 
   methods: {
-   async fetchUser() {
+    async fetchUser() {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/listUser');
         this.Users = response.data;
@@ -59,7 +60,7 @@ export default {
     async fetchRoles() {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/listRole');
-        this.Roles = response.data; // Ensure this is assigned correctly
+        this.Roles = response.data;
       } catch (error) {
         console.error('Erreur lors de la récupération des rôles:', error);
       }
@@ -84,14 +85,25 @@ export default {
         this.fetchUser();
         this.showCreateModal = false;
         this.resetNewUserForm();
-        this.showSuccessNotification = true;
-        setTimeout(() => {
-          this.showSuccessNotification = false;
-        }, 3000);
+        // Utiliser SweetAlert2 pour la notification de succès
+        Swal.fire({
+          title: 'Succès!',
+          text: 'Utilisateur créé avec succès!',
+          icon: 'success',
+          timer: 3000,
+          showConfirmButton: false
+        });
         console.log('Utilisateur créé avec succès:', response.data);
       } catch (error) {
         if (error.response) {
           this.errors = error.response.data.errors || {};
+          // Utiliser SweetAlert2 pour afficher les erreurs
+          Swal.fire({
+            title: 'Erreur!',
+            text: 'Il y a des erreurs dans le formulaire. Veuillez les corriger.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
         }
       }
     },
@@ -102,23 +114,64 @@ export default {
         this.fetchUser();
         this.showEditModal = false;
         this.resetEditUserForm();
+        // Utiliser SweetAlert2 pour la notification de succès
+        Swal.fire({
+          title: 'Succès!',
+          text: 'Utilisateur mis à jour avec succès!',
+          icon: 'success',
+          timer: 3000,
+          showConfirmButton: false
+        });
         console.log('Utilisateur mis à jour avec succès:', response.data);
       } catch (error) {
         if (error.response) {
           this.errors = error.response.data.errors || {};
+          // Utiliser SweetAlert2 pour afficher les erreurs
+          Swal.fire({
+            title: 'Erreur!',
+            text: 'Il y a des erreurs dans le formulaire. Veuillez les corriger.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
         }
       }
     },
     async deleteUser(id) {
-      if (confirm("Voulez-vous vraiment supprimer cet utilisateur?")) {
-        try {
-          await axios.delete(`http://127.0.0.1:8000/api/deleteUsers/${id}`);
-          this.fetchUser();
-          console.log('Utilisateur supprimé avec succès');
-        } catch (error) {
-          console.error('Erreur lors de la suppression de l\'utilisateur:', error);
+      // Remplacer confirm() par une alerte SweetAlert2
+      Swal.fire({
+        title: 'Êtes-vous sûr?',
+        text: "Voulez-vous vraiment supprimer cet utilisateur?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Oui, supprimer!',
+        cancelButtonText: 'Annuler'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios.delete(`http://127.0.0.1:8000/api/deleteUsers/${id}`)
+            .then(() => {
+              this.fetchUser();
+              Swal.fire({
+                title: 'Supprimé!',
+                text: 'L\'utilisateur a été supprimé avec succès.',
+                icon: 'success',
+                timer: 3000,
+                showConfirmButton: false
+              });
+              console.log('Utilisateur supprimé avec succès');
+            })
+            .catch(error => {
+              console.error('Erreur lors de la suppression de l\'utilisateur:', error);
+              Swal.fire({
+                title: 'Erreur!',
+                text: 'Erreur lors de la suppression de l\'utilisateur.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+            });
         }
-      }
+      });
     },
     editUser(user) {
       this.editUserData = { ...user };
@@ -129,7 +182,7 @@ export default {
         name: '',
         email: '',
         password: '',
-        role_id: '', // Ensure this matches the dropdown v-model
+        role_id: '',
       };
     },
     resetEditUserForm() {
@@ -138,12 +191,13 @@ export default {
         name: '',
         email: '',
         password: '',
-        role: '',
+        role_id: '',
       };
     }
   },
 };
 </script>
+
 <style scoped>
 .user-card {
   background-color: #f9f9f9; /* Light gray background for the card */
@@ -371,9 +425,9 @@ export default {
           </BCol>
           <BCol cols="12">
             <div class="mb-3">
-              <label for=" role">Role</label>
-              <input id=" role" v-model="editUserData. role" type="text" class="form-control" placeholder="" />
-              <div v-if="errors && errors. role" class="text-danger">{{ errors. role[0] }}</div>
+              <BFormGroup label="Rôle" label-for="role_id">
+                  <BFormSelect v-model="newUser.role_id" :options="Roles.map(role => ({ value: role.id, text: role.name }))" id="role_id"></BFormSelect>
+              </BFormGroup>
             </div>
           </BCol>
         </BRow>

@@ -1,3 +1,4 @@
+
 export const menuItems = [
     {
         id: 1,
@@ -32,7 +33,7 @@ export const menuItems = [
         label: "Clients",
         icon: "bx-user-circle",
         link: "/dossier/client",
-        roles: ['Admin', 'Comptable']
+        roles: ['Admin']
     },
     {
         id: 5,
@@ -63,13 +64,7 @@ export const menuItems = [
         link: "/dossier/produit",
         roles: ['Admin', 'Comptable']
     },
-    {
-        id: 9,  // Changed id to avoid duplicate
-        label: "Paiement",
-        icon: "bx-credit-card",
-        link: "/dossier/paiement",
-        roles: ['Admin', 'Client']
-    },
+
     {
         id: 10,  // Changed id to avoid duplicate
         label: "Statistiques",

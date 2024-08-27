@@ -1,12 +1,13 @@
 <script setup>
 import Layout from "../../layouts/main";
 import PageHeader from "@/components/page-header";
-import { ref, onMounted , watch} from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter } from "vue-router";
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const router = useRouter();
-let invoices = ref([]); 
+let invoices = ref([]);
 let filteredInvoices = ref([]); // Factures filtrées
 let showPending = ref(false); // État du filtre
 let showApproved = ref(false); // État du filtre pour les factures approuvées
@@ -41,21 +42,16 @@ const getInvoices = async () => {
     invoices.value = response.data.invoices;
     applyFilters(); // Appliquer les filtres après la récupération des factures
   } catch (error) {
-    console.error('Erreur lors de la récupération des factures:', error);
+    Swal.fire('Erreur', 'Erreur lors de la récupération des factures.', 'error');
   }
 };
-
-/*const openEditModal = (invoice) => {
-  currentInvoice.value = { ...invoice };
-  showEditModal.value = true;
-};*/
-
 
 // Méthode pour mettre à jour la facture
 const updateInvoice = async () => {
   try {
     if (!invoiceId.value) {
-      throw new Error('Invoice ID is not defined');
+      Swal.fire('Erreur', 'Invoice ID is not defined', 'error');
+      return;
     }
 
     const response = await axios.put(`http://127.0.0.1:8000/api/update-invoice/${invoiceId.value}`, {
@@ -66,12 +62,12 @@ const updateInvoice = async () => {
       total: formData.value.total,
     });
 
-    console.log(response.data.message);
+    Swal.fire('Succès', response.data.message, 'success');
     showUpdateModal.value = false;
     await getInvoices();
   } catch (error) {
     const errorMessage = error.response?.data?.errors || error.message;
-    console.error('Erreur lors de la mise à jour de la facture:', errorMessage);
+    Swal.fire('Erreur', `Erreur lors de la mise à jour de la facture: ${errorMessage}`, 'error');
   }
 };
 
@@ -81,26 +77,24 @@ const onShow = (id) => {
 
 const deleteInvoice = async (invoiceId) => {
   try {
-    await axios.delete(`http://127.0.0.1:8000/api/deleteInvoices/${invoiceId}`);
-    await getInvoices();
+    await Swal.fire({
+      title: 'Confirmer la suppression',
+      text: 'Êtes-vous sûr de vouloir supprimer cette facture?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, supprimer!',
+      cancelButtonText: 'Annuler'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await axios.delete(`http://127.0.0.1:8000/api/deleteInvoices/${invoiceId}`);
+        Swal.fire('Supprimé!', 'La facture a été supprimée.', 'success');
+        await getInvoices();
+      }
+    });
   } catch (error) {
-    console.error('Erreur lors de la suppression de la facture:', error);
+    Swal.fire('Erreur', 'Erreur lors de la suppression de la facture.', 'error');
   }
 };
-
-
-
-/*const updateApprobation = async (invoice) => {
-  try {
-    await axios.put(`http://127.0.0.1:8000/api/updateInvoice/${invoice.id}`, {
-      approbation: invoice.approbation
-    });
-    console.log('Approbation mise à jour avec succès');
-    await getInvoices(); // Actualiser les factures après la mise à jour
-  } catch (error) {
-    console.error('Erreur lors de la mise à jour de l\'approbation:', error);
-  }
-};*/
 
 // Méthode pour filtrer les factures "en attente"
 const filterPendingInvoices = () => {
@@ -134,11 +128,12 @@ const applyFilters = () => {
     filteredInvoices.value = invoices.value.filter(invoice => invoice.approbation === 'approuver');
   } else if (showNonApproved.value) {
     filteredInvoices.value = invoices.value.filter(invoice => invoice.approbation === 'non approuver');
-  }else {
+  } else {
     filteredInvoices.value = invoices.value;
   }
 };
 </script>
+
 
 <template>
   <Layout>
