@@ -291,14 +291,14 @@ export default {
                     <!-- User Details and Actions -->
                     <BCol xl="7">
                       <div class="p-4 text-center text-xl-start">
-                        <BRow>
+                        <!--BRow>
                           <BCol cols="6">
                             <div>
                               <p class="text-muted mb-2 text-truncate"></p>
-                              <h6>{{ getRoleName(user.role_id) }}</h6> <!-- Affiche le nom du rôle -->
+                              <h6>{{ getRoleName(user.role_id) }}</h6> 
                             </div>
                           </BCol>
-                        </BRow>
+                        </BRow-->
                         <div class="mt-4">
                           <BLink @click="editUser(user)" class="text-decoration-underline text-reset" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Edit">
                             Edit Profile <i class="mdi mdi-arrow-right ms-1"></i>

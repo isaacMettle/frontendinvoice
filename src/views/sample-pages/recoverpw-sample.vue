@@ -79,7 +79,7 @@ export default {
                     .then((res) => {
                         if (res.data.message) {
                             alert('Compte activé avec succès!');
-                            this.$router.push('/');
+                            this.$router.push('/loginclient');
                         } else {
                             this.errorMessage = 'Erreur';
                         }
@@ -94,20 +94,21 @@ export default {
 <template>
     <div class="account-pages my-5 pt-5">
         <BContainer>
-
             <BRow class="justify-content-center">
                 <BCol md="12" lg="8" xl="8">
                     <BCard no-body class="overflow-hidden">
                         <BRow no-gutters>
                             <BCol md="4" class="bg-light p-4 d-flex flex-column justify-content-center">
                                 <div class="text-center">
-                                    <h4> Bienvenue sur votre portail</h4>
-                                    <p class="mb-0"> Merci de changer de mot de passe</p>
+                                    <h4>Bienvenue sur votre portail</h4>
+                                    <p class="mb-0">Merci de changer de mot de passe</p>
                                 </div>
                             </BCol>
-                            <BCol md="8">
+                            <BCol md="4" class="d-flex align-items-center justify-content-center">
+                                <img src="@/assets/images/reset.jpg" alt="Image description" class="img-fluid" />
+                            </BCol>
+                            <BCol md="4">
                                 <BCardBody class="pt-0">
-
                                     <div class="p-2">
                                         <BAlert :model-value="true" variant="success" class="text-center mb-4">
                                             Veuillez changer de mot de passe
@@ -162,22 +163,21 @@ export default {
                                                     </BButton>
                                                 </BCol>
                                             </div>
-
                                         </BForm>
                                     </div>
-
                                 </BCardBody>
                             </BCol>
                         </BRow>
-
-
-
                     </BCard>
-
                 </BCol>
             </BRow>
         </BContainer>
     </div>
-
-
 </template>
+
+<style scoped>
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+</style>

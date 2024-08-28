@@ -26,18 +26,18 @@ export default {
 
     console.log('Role fetched from localStorage:', role); // Pour vérifier la valeur
 
-    if (role === 'Admin') {
-        return '/login';
-    } else if (role === 'Client') {
-        return '/loginclient';
-    } else if (role === 'Chef Comptable') {
-        return '/login';
-    } else if (role === 'Comptable') {
-        return '/login';
-    } else {
-        return '/';
-    }
-};
+              if (role === 'Admin') {
+                  return '/login';
+              } else if (role === 'Client') {
+                  return '/loginclient';
+              } else if (role === 'Chef Comptable') {
+                  return '/login';
+              } else if (role === 'Comptable') {
+                  return '/login';
+              } else {
+                  return '/';
+              }
+          };
 
 
         return {
@@ -151,31 +151,32 @@ export default {
         </BButton>
       </div>
 
-          <div class="d-flex">
+      <div class="d-flex">
       <BDropdown right variant="black" toggle-class="header-item" menu-class="dropdown-menu-end">
         <template v-slot:button-content>
           <img class="rounded-circle header-profile-user" :src="avatar1" alt="Header Avatar" />
           <span class="d-none d-xl-inline-block ms-1">
             <div v-if="currentUser">
-              <span :class="['badge', userBadgeColor(currentUser.role)]">
+              <span :class="['badge', userBadgeColor(currentUser.role), 'bg-primary', 'text-white', 'p-2', 'rounded']">
                 {{ currentUser.displayName }}
                 <small class="text-muted">({{ currentUser.role }})</small> <!-- Affichage du rôle -->
               </span>
             </div>
             <div v-else>
-              <span class="badge bg-secondary">Utilisateur</span>
+              <span class="badge bg-secondary p-2 rounded">Utilisateur</span>
             </div>
           </span>
           <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
         </template>
-      
+
         <BDropdownDivider></BDropdownDivider>
-        <a href="#" class="dropdown-item text-danger" @click.prevent="handleLogout"> 
+        <a href="#" class="dropdown-item text-danger" @click.prevent="handleLogout">
           <i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>
           {{ $t("navbar.dropdown.henry.list.logout") }}
         </a>
       </BDropdown>
     </div>
+
     </div>
   </header>
 </template>
@@ -208,5 +209,14 @@ export default {
 .bg-secondary {
   background-color: #6c757d;
 }
+
+.custom-badge {
+  background-color: #007bff; /* bleu par défaut de Bootstrap */
+  color: white;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
 
 </style>

@@ -169,9 +169,9 @@ const applyFilters = () => {
                   <BTr>
                     <BTh>ID</BTh>
                     <BTh>Date</BTh>
-                    <BTh>Number</BTh>
-                    <BTh>Customer</BTh>
-                    <BTh>Due Date</BTh>
+                    <BTh>Numero facture</BTh>
+                    <BTh>Client</BTh>
+                    <BTh>Date d'echeance</BTh>
                     <BTh>Total</BTh>
                     <BTh>Approbation</BTh>
                     <BTh>Action</BTh>

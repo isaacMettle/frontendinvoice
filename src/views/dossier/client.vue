@@ -247,91 +247,91 @@ export default {
     <BModal v-model="showCreateModal" title="Ajouter nouveau client" hide-footer>
   <BForm @submit.prevent="createClient">
     <BRow>
-      <BCol cols="12">
-        <div class="mb-3">
-          <label for="name" class="form-label">Nom</label>
-          <input
-            id="name"
-            v-model="newClient.name"
-            type="text"
-            class="form-control"
-            placeholder="Entrez le nom du client"
-            required
-          />
-          <div v-if="errors.name" class="text-danger mt-1">
-            {{ errors.name[0] }}
-          </div>
-        </div>
-      </BCol>
-      <BCol cols="12">
-        <div class="mb-3">
-          <label for="phone" class="form-label">NIF</label>
-          <input
-            id="phone"
-            v-model="newClient.NIF"
-            type="text"
-            class="form-control"
-            placeholder="Entrez le NIF"
-            required
-          />
-          <div v-if="errors.NIF" class="text-danger mt-1">
-            {{ errors.NIF[0] }}
-          </div>
-        </div>
-      </BCol>
-      <BCol cols="12">
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input
-            id="email"
-            v-model="newClient.email"
-            type="email"
-            class="form-control"
-            placeholder="Entrez l'adresse email"
-            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-            required
-          />
-          <div v-if="errors.email" class="text-danger mt-1">
-            {{ errors.email[0] }}
-          </div>
-          <div v-if="!isValidEmail(newClient.email)" class="text-danger mt-1">
-            Format d'email invalide.
-          </div>
-        </div>
-      </BCol>
-      <BCol cols="12">
-        <div class="mb-3">
-          <label for="address" class="form-label">Adresse</label>
-          <input
-            id="address"
-            v-model="newClient.address"
-            type="text"
-            class="form-control"
-            placeholder="Entrez l'adresse"
-            required
-          />
-          <div v-if="errors.address" class="text-danger mt-1">
-            {{ errors.address[0] }}
-          </div>
-        </div>
-      </BCol>
-      <BCol cols="12">
-        <div class="mb-3">
-          <label for="password" class="form-label">Mot de passe</label>
-          <input
-            id="password"
-            v-model="newClient.password"
-            type="password"
-            class="form-control"
-            placeholder="Entrez le mot de passe"
-            required
-          />
-          <div v-if="errors.password" class="text-danger mt-1">
-            {{ errors.password[0] }}
-          </div>
-        </div>
-      </BCol>
-    </BRow>
+  <BCol cols="12">
+    <div class="mb-3">
+      <label for="name" class="form-label">Nom</label>
+      <input
+        id="name"
+        v-model="newClient.name"
+        type="text"
+        class="form-control"
+        placeholder="Entrez le nom du client"
+        required
+      />
+      <div v-if="errors.name" class="text-danger mt-1">
+        {{ errors.name[0] }}
+      </div>
+    </div>
+  </BCol>
+  <BCol cols="12">
+    <div class="mb-3">
+      <label for="phone" class="form-label">NIF</label>
+      <input
+        id="phone"
+        v-model="newClient.NIF"
+        type="text"
+        class="form-control"
+        placeholder="Entrez le NIF"
+     
+      />
+      <div v-if="errors.NIF" class="text-danger mt-1">
+        {{ errors.NIF[0] }}
+      </div>
+    </div>
+  </BCol>
+  <BCol cols="12">
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input
+        id="email"
+        v-model="newClient.email"
+        type="email"
+        class="form-control"
+        placeholder="Entrez l'adresse email"
+        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+        required
+      />
+      <div v-if="errors.email" class="text-danger mt-1">
+        {{ errors.email[0] }}
+      </div>
+      <div v-if="!isValidEmail(newClient.email)" class="text-danger mt-1">
+        Format d'email invalide.
+      </div>
+    </div>
+  </BCol>
+  <BCol cols="12">
+    <div class="mb-3">
+      <label for="address" class="form-label">Adresse</label>
+      <input
+        id="address"
+        v-model="newClient.address"
+        type="text"
+        class="form-control"
+        placeholder="Entrez l'adresse"
+      
+      />
+      <div v-if="errors.address" class="text-danger mt-1">
+        {{ errors.address[0] }}
+      </div>
+    </div>
+  </BCol>
+  <BCol cols="12">
+    <div class="mb-3">
+      <label for="password" class="form-label">Mot de passe</label>
+      <input
+        id="password"
+        v-model="newClient.password"
+        type="password"
+        class="form-control"
+        placeholder="Entrez le mot de passe"
+        required
+      />
+      <div v-if="errors.password" class="text-danger mt-1">
+        {{ errors.password[0] }}
+      </div>
+    </div>
+  </BCol>
+</BRow>
     <div class="text-end pt-4">
       <BButton variant="light" @click="showCreateModal = false">Fermer</BButton>
       <BButton type="submit" variant="success" class="ms-2">Enregistrer</BButton>
@@ -381,7 +381,7 @@ export default {
             type="text"
             class="form-control"
             placeholder="Entrez le NIF"
-            required
+      
           />
           <div v-if="errors && errors.NIF" class="text-danger">
             {{ errors.NIF[0] }}
@@ -413,7 +413,7 @@ export default {
             type="text"
             class="form-control"
             placeholder="Entrez l'adresse"
-            required
+    
           />
           <div v-if="errors && errors.address" class="text-danger">
             {{ errors.address[0] }}

@@ -233,6 +233,13 @@ const onEdit = async () => {
 .add-button:hover {
   background-color: #f0f0f0;
 }
+
+.table-header-blue {
+    background-color: #007bff; /* Couleur bleue de Bootstrap */
+    color: white; /* Texte en blanc pour contraste */
+}
+
+
  
 </style>
 
@@ -284,10 +291,7 @@ const onEdit = async () => {
                     <label for="invoice_number">Numéro</label>
                     <input id="invoice_number" v-model="form.invoice_number" name="invoice_number" type="text" class="form-control" />
                   </div>
-                  <div class="mb-3">
-                    <label for="reference">Référence (Optionnel)</label>
-                    <input id="reference" v-model="form.note" name="reference" type="text" class="form-control" />
-                  </div>
+                 
                 </BCol>
               </BRow>
             </BForm>
@@ -335,7 +339,7 @@ const onEdit = async () => {
 
     <div class="table-responsive">
     <BTableSimple class="table-custom mb-0">
-        <BThead>
+        <BThead class="bg-primary text-white">
             <BTr>
                 <BTh class="text-nowrap">Item</BTh>
                 <BTh class="text-nowrap">Description</BTh>
@@ -423,7 +427,7 @@ const onEdit = async () => {
                         </BRow>
                         <BCol mb="12">
                           <div class="mt-2 text-end"  >
-                            <BButton variant="success" class="w-lg" @click="onEdit(form.id)">Enregistrer la facture</BButton>
+                            <BButton variant="warning" class="w-lg" @click="onEdit(form.id)">Modifier la facture</BButton>
                           </div>
                         </BCol>
                       </BTr>

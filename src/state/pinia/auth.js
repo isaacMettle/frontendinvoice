@@ -64,7 +64,7 @@ export const useAuthStore = defineStore("auth", {
                     case 'Comptable':
                         return 'page facturelist';
                     case 'Client':
-                        return 'default';    
+                        return 'page client2';    
                     default:
                         return 'default';
                 }

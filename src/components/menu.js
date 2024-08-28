@@ -65,20 +65,8 @@ export const menuItems = [
         roles: ['Admin', 'Comptable']
     },
 
-    {
-        id: 10,  // Changed id to avoid duplicate
-        label: "Statistiques",
-        icon: "bx-bar-chart",
-        link: "/dossier/statistiques",
-        roles: ['Admin', 'Chef Comptable']
-    },
-    {
-        id: 11,  // Changed id to avoid duplicate
-        label: "Déconnexion",
-        icon: "bx-log-out",
-        link: "/account/logout",
-        roles: ['Admin', 'Client', 'Chef Comptable', 'Comptable']
-    },
+    
+    
     {
         id: 12,
         isLayout: true

@@ -150,6 +150,13 @@ export default [
    
   },
 
+  {
+    path: "/dossier/pageclient",
+    name: "page client2",
+    //meta: { title: "ajouterfacture", authRequired: true },
+    component: () => import("../views/dossier/pageclient.vue")
+  },
+
   /*{
     path: "/dossier/statistiques",
     name: "page statistiques",

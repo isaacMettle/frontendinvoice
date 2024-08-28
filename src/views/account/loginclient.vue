@@ -67,14 +67,14 @@ export default {
                 try {
                     const authStore = useAuthStore();
                     const redirectRoute = await authStore.logIn({ email: this.email, password: this.password, role: this.role });
-                    /*const userRole = localStorage.getItem('userRole');
+                    const userRole = localStorage.getItem('userRole');
                     console.log('User role from local storage:', userRole);
                     if (userRole !== 'Client') {
                         // Si l'utilisateur n'est pas un client, déconnectez-le et redirigez-le vers une page 403
                         authStore.logOut();
                         this.$router.push({ name: 'page404' });
                         return;
-                    }*/
+                    }
                     this.authSucces = "Connexion réussie";
                     this.isAuthSucces = true;
                     this.isAuthError = false;
